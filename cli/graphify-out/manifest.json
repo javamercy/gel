@@ -1,0 +1,527 @@
+{
+  "/Users/emrecan/Projects/Gel/cli/internal/reset.go": {
+    "mtime": 1777709424.7330823,
+    "ast_hash": "7b125a7b03d811b71d2261e635e03c20",
+    "semantic_hash": "7b125a7b03d811b71d2261e635e03c20"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/commit/log.go": {
+    "mtime": 1777658423.689692,
+    "ast_hash": "299c492ad27779bf0ccafc32fab360b5",
+    "semantic_hash": "299c492ad27779bf0ccafc32fab360b5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/commit/commit.go": {
+    "mtime": 1775225403.7069845,
+    "ast_hash": "ce9c9d480b0a52267102cb61158da196",
+    "semantic_hash": "ce9c9d480b0a52267102cb61158da196"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/commit/commit_tree.go": {
+    "mtime": 1777658423.6838496,
+    "ast_hash": "9f4843d41e824ba4696db6801258be74",
+    "semantic_hash": "9f4843d41e824ba4696db6801258be74"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/commit/errors.go": {
+    "mtime": 1775225392.545787,
+    "ast_hash": "f5f4dc4a1701d76ca6b656d8727ab2a5",
+    "semantic_hash": "f5f4dc4a1701d76ca6b656d8727ab2a5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/tree/ls_tree.go": {
+    "mtime": 1775120870.1853778,
+    "ast_hash": "4fd934fbf1f87e933b6943e2c02425ce",
+    "semantic_hash": "4fd934fbf1f87e933b6943e2c02425ce"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/tree/write_tree.go": {
+    "mtime": 1777658423.652914,
+    "ast_hash": "11f8fe9b50c7e5c241224ace56c4b78e",
+    "semantic_hash": "11f8fe9b50c7e5c241224ace56c4b78e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/tree/read_tree.go": {
+    "mtime": 1777669452.1264772,
+    "ast_hash": "1b34ffa176463c2ddbf73bc250000b63",
+    "semantic_hash": "1b34ffa176463c2ddbf73bc250000b63"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/validate/validate.go": {
+    "mtime": 1775077569.6620078,
+    "ast_hash": "fff06d9c42e075d46c2f786ae88aa053",
+    "semantic_hash": "fff06d9c42e075d46c2f786ae88aa053"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/staging/add.go": {
+    "mtime": 1777711024.5087292,
+    "ast_hash": "9238ac2f534274354965acd2b5f45268",
+    "semantic_hash": "9238ac2f534274354965acd2b5f45268"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/staging/update_index.go": {
+    "mtime": 1777663837.6202536,
+    "ast_hash": "fa447aa74c4c1831a3185be329873937",
+    "semantic_hash": "fa447aa74c4c1831a3185be329873937"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/staging/remove.go": {
+    "mtime": 1777709424.743795,
+    "ast_hash": "63e306c92778b2354e955a16d7147407",
+    "semantic_hash": "63e306c92778b2354e955a16d7147407"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/staging/ls_files.go": {
+    "mtime": 1777658043.9820337,
+    "ast_hash": "f772c2e1310d0d171bb9e9cf33d7573f",
+    "semantic_hash": "f772c2e1310d0d171bb9e9cf33d7573f"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/staging/errors.go": {
+    "mtime": 1776680651.7010992,
+    "ast_hash": "60d3b3dcec0deb7e976917309f35da96",
+    "semantic_hash": "60d3b3dcec0deb7e976917309f35da96"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/branch/switch.go": {
+    "mtime": 1777709424.7280178,
+    "ast_hash": "d1a00fd2890f0647ed08b194cb7278a8",
+    "semantic_hash": "d1a00fd2890f0647ed08b194cb7278a8"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/branch/branch.go": {
+    "mtime": 1777669393.0397365,
+    "ast_hash": "aea6dfd99ee0085cd80aaebbab383d1d",
+    "semantic_hash": "aea6dfd99ee0085cd80aaebbab383d1d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/branch/errors.go": {
+    "mtime": 1775212237.4434547,
+    "ast_hash": "c09120a2e58b802c30200e6ebe3378de",
+    "semantic_hash": "c09120a2e58b802c30200e6ebe3378de"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/inspect/show.go": {
+    "mtime": 1777658423.6506193,
+    "ast_hash": "d6a441c34a691f1236db0b8fc57f5ce5",
+    "semantic_hash": "d6a441c34a691f1236db0b8fc57f5ce5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/inspect/cat_file.go": {
+    "mtime": 1777709810.902147,
+    "ast_hash": "d094b5a62ef9ff5b83f7f03fcfa3c58d",
+    "semantic_hash": "d094b5a62ef9ff5b83f7f03fcfa3c58d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/inspect/status.go": {
+    "mtime": 1776001872.4538517,
+    "ast_hash": "4b3048b6fd997eddc3180998f5a93bef",
+    "semantic_hash": "4b3048b6fd997eddc3180998f5a93bef"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/inspect/restore.go": {
+    "mtime": 1777709424.7217586,
+    "ast_hash": "0627b0d25e29a823fdd6c1c9d5309283",
+    "semantic_hash": "0627b0d25e29a823fdd6c1c9d5309283"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/inspect/errors.go": {
+    "mtime": 1772009137.8458884,
+    "ast_hash": "304147dd4dc534fbe8b8205bf76633c1",
+    "semantic_hash": "304147dd4dc534fbe8b8205bf76633c1"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/object.go": {
+    "mtime": 1777709792.7742805,
+    "ast_hash": "47b238e772dc6a62265ed74186963a30",
+    "semantic_hash": "47b238e772dc6a62265ed74186963a30"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/index.go": {
+    "mtime": 1776523186.263406,
+    "ast_hash": "386e0cbc0edaead45fb1fc542d5ff619",
+    "semantic_hash": "386e0cbc0edaead45fb1fc542d5ff619"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/encoding.go": {
+    "mtime": 1771233903.5809145,
+    "ast_hash": "8bdd7789b41e1c49478e016f2b355a16",
+    "semantic_hash": "8bdd7789b41e1c49478e016f2b355a16"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/config.go": {
+    "mtime": 1777666050.0085044,
+    "ast_hash": "07bf188685106a5d10636026ac52df99",
+    "semantic_hash": "07bf188685106a5d10636026ac52df99"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/update_ref.go": {
+    "mtime": 1775210151.699993,
+    "ast_hash": "f288f5ade1b03e5cbfa868494448a00d",
+    "semantic_hash": "f288f5ade1b03e5cbfa868494448a00d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/commit_resolver.go": {
+    "mtime": 1777709799.118203,
+    "ast_hash": "ed655db49698812951a70246d4b7fa43",
+    "semantic_hash": "ed655db49698812951a70246d4b7fa43"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/tree_resolver.go": {
+    "mtime": 1777669362.028464,
+    "ast_hash": "6c6f7a6802a28b4dd97dbf6248e2444e",
+    "semantic_hash": "6c6f7a6802a28b4dd97dbf6248e2444e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/constants.go": {
+    "mtime": 1771235836.5600383,
+    "ast_hash": "4baf718b0554cc90777102d37150f320",
+    "semantic_hash": "4baf718b0554cc90777102d37150f320"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/hash_object.go": {
+    "mtime": 1777535680.2231674,
+    "ast_hash": "9fb4502adf6fb57fdd40aeb1a28fabcb",
+    "semantic_hash": "9fb4502adf6fb57fdd40aeb1a28fabcb"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/pathutil.go": {
+    "mtime": 1776678077.3456755,
+    "ast_hash": "eb25f8e3794317d1023662e03aff2238",
+    "semantic_hash": "eb25f8e3794317d1023662e03aff2238"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/ref.go": {
+    "mtime": 1777709424.7403016,
+    "ast_hash": "f7362b087dedc2df9e596883efdce322",
+    "semantic_hash": "f7362b087dedc2df9e596883efdce322"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/tree_walker.go": {
+    "mtime": 1777657950.6924596,
+    "ast_hash": "8b07b9d1230b6d75a06666cc79230dc2",
+    "semantic_hash": "8b07b9d1230b6d75a06666cc79230dc2"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/symbolic_ref.go": {
+    "mtime": 1775207345.3823023,
+    "ast_hash": "dbe96a4d7738816e247fce9223517bca",
+    "semantic_hash": "dbe96a4d7738816e247fce9223517bca"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/path_resolver.go": {
+    "mtime": 1777669357.3125362,
+    "ast_hash": "296609b86deb685c8525345578582a4a",
+    "semantic_hash": "296609b86deb685c8525345578582a4a"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/change_detector.go": {
+    "mtime": 1777669337.4371648,
+    "ast_hash": "e9d0bf1e8f30fce6d90cb8e415910567",
+    "semantic_hash": "e9d0bf1e8f30fce6d90cb8e415910567"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/core/errors.go": {
+    "mtime": 1773579635.6166484,
+    "ast_hash": "04d771e6a8145a4a5669787b03604a7c",
+    "semantic_hash": "04d771e6a8145a4a5669787b03604a7c"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/setup/init.go": {
+    "mtime": 1777709424.714655,
+    "ast_hash": "0a8781fd4a2cd3a1b6eb7557576cd688",
+    "semantic_hash": "0a8781fd4a2cd3a1b6eb7557576cd688"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/diff/diff.go": {
+    "mtime": 1777669452.1277924,
+    "ast_hash": "f56e859823b4679b51ac3f116832e0fb",
+    "semantic_hash": "f56e859823b4679b51ac3f116832e0fb"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/diff/hunk.go": {
+    "mtime": 1776001872.4276755,
+    "ast_hash": "017d8db6ceff77bdc0ba2406d10444d9",
+    "semantic_hash": "017d8db6ceff77bdc0ba2406d10444d9"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/diff/myers.go": {
+    "mtime": 1775586132.3029165,
+    "ast_hash": "90d725031d9d767f7059e05457dff6ef",
+    "semantic_hash": "90d725031d9d767f7059e05457dff6ef"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/diff/errors.go": {
+    "mtime": 1772009139.8360643,
+    "ast_hash": "ac80b067eaeb3737e2e76154de3db117",
+    "semantic_hash": "ac80b067eaeb3737e2e76154de3db117"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/log.go": {
+    "mtime": 1775228825.7257493,
+    "ast_hash": "cc77922bba533bbc2864e73721b43a2e",
+    "semantic_hash": "cc77922bba533bbc2864e73721b43a2e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/config.go": {
+    "mtime": 1775163507.126594,
+    "ast_hash": "5bdae89c5c813abaac2d6956ae0a618a",
+    "semantic_hash": "5bdae89c5c813abaac2d6956ae0a618a"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/add.go": {
+    "mtime": 1777655425.0404665,
+    "ast_hash": "1f430a6f7937f6fdeeb6dd7ef31afb5e",
+    "semantic_hash": "1f430a6f7937f6fdeeb6dd7ef31afb5e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/update_index.go": {
+    "mtime": 1777669375.917857,
+    "ast_hash": "c23cc4900e78e084684b274c96debca5",
+    "semantic_hash": "c23cc4900e78e084684b274c96debca5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/update_ref.go": {
+    "mtime": 1777658423.6664004,
+    "ast_hash": "4ed36a771311729b46510e4a0bccca32",
+    "semantic_hash": "4ed36a771311729b46510e4a0bccca32"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/show.go": {
+    "mtime": 1775918434.0280085,
+    "ast_hash": "ff3ce45166fbf6703acd0ae16bc953b6",
+    "semantic_hash": "ff3ce45166fbf6703acd0ae16bc953b6"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/switch.go": {
+    "mtime": 1776001872.3193853,
+    "ast_hash": "dab3c2a03539e60fa0cda48aa3a2dcb0",
+    "semantic_hash": "dab3c2a03539e60fa0cda48aa3a2dcb0"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/ls_tree.go": {
+    "mtime": 1777658423.7044325,
+    "ast_hash": "10d9119fb69851ba0d250652827e39c6",
+    "semantic_hash": "10d9119fb69851ba0d250652827e39c6"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/branch.go": {
+    "mtime": 1775212204.6790352,
+    "ast_hash": "e6a93bd40e6b60f440e3a5fecc41cbc4",
+    "semantic_hash": "e6a93bd40e6b60f440e3a5fecc41cbc4"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/cat_file.go": {
+    "mtime": 1777658423.6788826,
+    "ast_hash": "5edb7fd189ca005a309771ba04b832b2",
+    "semantic_hash": "5edb7fd189ca005a309771ba04b832b2"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/commit.go": {
+    "mtime": 1775225209.3468397,
+    "ast_hash": "b68ce6bf7f8fe02862a48ce5a22e2c96",
+    "semantic_hash": "b68ce6bf7f8fe02862a48ce5a22e2c96"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/reset.go": {
+    "mtime": 1776199093.109971,
+    "ast_hash": "78b91f3c25dc8e2fa93949d2f6b4a821",
+    "semantic_hash": "78b91f3c25dc8e2fa93949d2f6b4a821"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/write_tree.go": {
+    "mtime": 1775121372.4907072,
+    "ast_hash": "f803ee0d917cfbb0c627ecbc7aba5738",
+    "semantic_hash": "f803ee0d917cfbb0c627ecbc7aba5738"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/remove.go": {
+    "mtime": 1776673255.1624045,
+    "ast_hash": "dd81253e1cb8f41c6aea59325f1fcd85",
+    "semantic_hash": "dd81253e1cb8f41c6aea59325f1fcd85"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/hash_object.go": {
+    "mtime": 1775079136.26607,
+    "ast_hash": "bfb388c8378711525c4ca0c43ca3ac49",
+    "semantic_hash": "bfb388c8378711525c4ca0c43ca3ac49"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/ls_files.go": {
+    "mtime": 1774897527.4672666,
+    "ast_hash": "f4532157876249af5288d73b75e67aab",
+    "semantic_hash": "f4532157876249af5288d73b75e67aab"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/read_tree.go": {
+    "mtime": 1777658423.6917703,
+    "ast_hash": "7d5a6887a88edc63b250611980ee8412",
+    "semantic_hash": "7d5a6887a88edc63b250611980ee8412"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/diff.go": {
+    "mtime": 1777658423.706764,
+    "ast_hash": "5ff3520dce5e01dc7d5b3ba3c168ad88",
+    "semantic_hash": "5ff3520dce5e01dc7d5b3ba3c168ad88"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/commit_tree.go": {
+    "mtime": 1777658423.702162,
+    "ast_hash": "29a09f6e5345e1e8fee28fd039b005c6",
+    "semantic_hash": "29a09f6e5345e1e8fee28fd039b005c6"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/status.go": {
+    "mtime": 1775506942.3145247,
+    "ast_hash": "12fa342f4baa24d659539ccb732aa013",
+    "semantic_hash": "12fa342f4baa24d659539ccb732aa013"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/restore.go": {
+    "mtime": 1775934126.229866,
+    "ast_hash": "33577cddd1cb84bc4978313ccaebffb9",
+    "semantic_hash": "33577cddd1cb84bc4978313ccaebffb9"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/init.go": {
+    "mtime": 1777450780.2762513,
+    "ast_hash": "7b156c5308e2e23602d3b6a0c6497e6b",
+    "semantic_hash": "7b156c5308e2e23602d3b6a0c6497e6b"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/symbolic_ref.go": {
+    "mtime": 1775207395.741355,
+    "ast_hash": "5cec9bbee2d31545eb98973714181b3e",
+    "semantic_hash": "5cec9bbee2d31545eb98973714181b3e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/cli/root.go": {
+    "mtime": 1777448961.2825181,
+    "ast_hash": "0d5c32e025832d08ccde4c01733340f3",
+    "semantic_hash": "0d5c32e025832d08ccde4c01733340f3"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/storage/object.go": {
+    "mtime": 1777709424.711643,
+    "ast_hash": "7f3b05092fd20308af25a6d17158e5ec",
+    "semantic_hash": "7f3b05092fd20308af25a6d17158e5ec"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/storage/index.go": {
+    "mtime": 1777709424.7244904,
+    "ast_hash": "e5180b4752c7a3984fb95546323c86ef",
+    "semantic_hash": "e5180b4752c7a3984fb95546323c86ef"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/storage/config.go": {
+    "mtime": 1777709424.730151,
+    "ast_hash": "75dac577f13df6eb0342b5b4b670c240",
+    "semantic_hash": "75dac577f13df6eb0342b5b4b670c240"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/object.go": {
+    "mtime": 1777709782.8337412,
+    "ast_hash": "11a0e6203b35a6b7df678a6cfb556929",
+    "semantic_hash": "11a0e6203b35a6b7df678a6cfb556929"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/path_sort.go": {
+    "mtime": 1777659281.752376,
+    "ast_hash": "685fdd777317137070545488623b59e5",
+    "semantic_hash": "685fdd777317137070545488623b59e5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/index.go": {
+    "mtime": 1777668597.052701,
+    "ast_hash": "c1c4e769e1ec2e2fd6676ecbb9e11530",
+    "semantic_hash": "c1c4e769e1ec2e2fd6676ecbb9e11530"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/encoding.go": {
+    "mtime": 1777710429.6864705,
+    "ast_hash": "26a6ea48962f0651e87afd40d7cd6fa4",
+    "semantic_hash": "26a6ea48962f0651e87afd40d7cd6fa4"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/config.go": {
+    "mtime": 1777664888.7706614,
+    "ast_hash": "89e9ba3d18627979f86c414ce29febbf",
+    "semantic_hash": "89e9ba3d18627979f86c414ce29febbf"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/tree.go": {
+    "mtime": 1777658595.4391026,
+    "ast_hash": "6fcf7b8f1ef55d3b2fded47aeea5a4e8",
+    "semantic_hash": "6fcf7b8f1ef55d3b2fded47aeea5a4e8"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/time.go": {
+    "mtime": 1777659463.5690186,
+    "ast_hash": "2e8838e16bd62018ddfbe2a409f2d63b",
+    "semantic_hash": "2e8838e16bd62018ddfbe2a409f2d63b"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/path_types.go": {
+    "mtime": 1777708894.0802832,
+    "ast_hash": "749286592b536a2b5c37f7e96fb96eca",
+    "semantic_hash": "749286592b536a2b5c37f7e96fb96eca"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/commit.go": {
+    "mtime": 1777658486.9751182,
+    "ast_hash": "187a6285e73d8f2df3d1503b827eceac",
+    "semantic_hash": "187a6285e73d8f2df3d1503b827eceac"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/constants.go": {
+    "mtime": 1777709473.402963,
+    "ast_hash": "196e2d0348064875a55808cb33111f56",
+    "semantic_hash": "196e2d0348064875a55808cb33111f56"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/filemode.go": {
+    "mtime": 1777656829.068359,
+    "ast_hash": "081ee9931f06d22ab15c70e2c6d061d8",
+    "semantic_hash": "081ee9931f06d22ab15c70e2c6d061d8"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/file_stat.go": {
+    "mtime": 1777664073.7529166,
+    "ast_hash": "e38329fa8e5e16c8e0d94ae016c8f98a",
+    "semantic_hash": "e38329fa8e5e16c8e0d94ae016c8f98a"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/hash.go": {
+    "mtime": 1777658486.981432,
+    "ast_hash": "50a6534e354cb1a20108a268a1d29a35",
+    "semantic_hash": "50a6534e354cb1a20108a268a1d29a35"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/blob.go": {
+    "mtime": 1777537251.0796623,
+    "ast_hash": "97a60e00f97ad50c9acbeeb1bf7e532d",
+    "semantic_hash": "97a60e00f97ad50c9acbeeb1bf7e532d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/identity.go": {
+    "mtime": 1777709688.3720922,
+    "ast_hash": "b28197904798168ea67cc33e08974aed",
+    "semantic_hash": "b28197904798168ea67cc33e08974aed"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/workspace.go": {
+    "mtime": 1777708838.0315292,
+    "ast_hash": "96eb3c92a1dfdb1527d3e225429ee6dd",
+    "semantic_hash": "96eb3c92a1dfdb1527d3e225429ee6dd"
+  },
+  "/Users/emrecan/Projects/Gel/cli/internal/domain/object_type.go": {
+    "mtime": 1777537163.3251402,
+    "ast_hash": "d129a9a15df92867cebd2a5285d1f5d7",
+    "semantic_hash": "d129a9a15df92867cebd2a5285d1f5d7"
+  },
+  "/Users/emrecan/Projects/Gel/cli/README.md": {
+    "mtime": 1777710506.7994277,
+    "ast_hash": "b7901a9f9da85955a64038687ea8c0b6",
+    "semantic_hash": "b7901a9f9da85955a64038687ea8c0b6"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/ROADMAP.md": {
+    "mtime": 1776244590.3209724,
+    "ast_hash": "54bc569d0feaa9c7e759e274e2bcbae4",
+    "semantic_hash": "54bc569d0feaa9c7e759e274e2bcbae4"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/ERROR_GUIDE.md": {
+    "mtime": 1777410573.463909,
+    "ast_hash": "6b895249deb785adeecc6bf715aa196b",
+    "semantic_hash": "6b895249deb785adeecc6bf715aa196b"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/DOMAIN_REFACTORING_GUIDE.md": {
+    "mtime": 1777710090.8628988,
+    "ast_hash": "71a78911b67473adc4214e71cc03d8bb",
+    "semantic_hash": "71a78911b67473adc4214e71cc03d8bb"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/AI_LEARNING_GUIDE.md": {
+    "mtime": 1776248303.9745421,
+    "ast_hash": "0a401768e879663a0e2e386f1867a03e",
+    "semantic_hash": "0a401768e879663a0e2e386f1867a03e"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/COMMAND_GUIDE_TEMPLATE.md": {
+    "mtime": 1777385031.2090578,
+    "ast_hash": "4056e9231f2cc14b4dd721ae1a21da9d",
+    "semantic_hash": "4056e9231f2cc14b4dd721ae1a21da9d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/ERROR_HANDLING_GUIDE.md": {
+    "mtime": 1777410227.6313338,
+    "ast_hash": "7e0c7e98a6728d9668e447e0bfb0e23d",
+    "semantic_hash": "7e0c7e98a6728d9668e447e0bfb0e23d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/guides/DOCUMENTATION_GUIDE.md": {
+    "mtime": 1777451143.4141397,
+    "ast_hash": "b7d5af70808c0554fb27396388bf75e5",
+    "semantic_hash": "b7d5af70808c0554fb27396388bf75e5"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/HASH_OBJECT_COMMAND.md": {
+    "mtime": 1777385031.2022367,
+    "ast_hash": "ea4ad27e19897e3331dfb5605a628bf8",
+    "semantic_hash": "ea4ad27e19897e3331dfb5605a628bf8"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/RM_COMMAND.md": {
+    "mtime": 1777385031.1876853,
+    "ast_hash": "fad78e0452ddb229baff15dc42e3f7a2",
+    "semantic_hash": "fad78e0452ddb229baff15dc42e3f7a2"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/CAT_FILE_COMMAND.md": {
+    "mtime": 1777385031.1993377,
+    "ast_hash": "746b4c79098697f08d929d3ee6037205",
+    "semantic_hash": "746b4c79098697f08d929d3ee6037205"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/CONFIG_COMMAND.md": {
+    "mtime": 1777385031.2132072,
+    "ast_hash": "734d3add5cf396dc22b9b9f2db16464b",
+    "semantic_hash": "734d3add5cf396dc22b9b9f2db16464b"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/ADD_COMMAND.md": {
+    "mtime": 1777318289.7239828,
+    "ast_hash": "0713b58db4060243225352df30a38921",
+    "semantic_hash": "0713b58db4060243225352df30a38921"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/LS_FILES_COMMAND.md": {
+    "mtime": 1777385031.1922133,
+    "ast_hash": "c6262d4b7ea5b131e088211b671230b2",
+    "semantic_hash": "c6262d4b7ea5b131e088211b671230b2"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/UPDATE_INDEX_COMMAND.md": {
+    "mtime": 1777385031.195226,
+    "ast_hash": "793f7ad1fe85654fac6b759829bb5353",
+    "semantic_hash": "793f7ad1fe85654fac6b759829bb5353"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/INIT_COMMAND.md": {
+    "mtime": 1777452487.2410076,
+    "ast_hash": "82daf8a0f9fca5e7a8550045e4e9b58d",
+    "semantic_hash": "82daf8a0f9fca5e7a8550045e4e9b58d"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/commands/WRITE_TREE_COMMAND.md": {
+    "mtime": 1777385031.1838324,
+    "ast_hash": "1d377f8c31f2319f1747840192e7f847",
+    "semantic_hash": "1d377f8c31f2319f1747840192e7f847"
+  },
+  "/Users/emrecan/Projects/Gel/cli/docs/statuses/INIT_STATUS.md": {
+    "mtime": 1777535533.4377787,
+    "ast_hash": "f85ebd3caa7e3e6106c110362e973c44",
+    "semantic_hash": "f85ebd3caa7e3e6106c110362e973c44"
+  }
+}

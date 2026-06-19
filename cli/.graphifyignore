@@ -1,0 +1,7 @@
+.gel/
+.idea/
+.DS_Store
+AGENTS.md
+gel
+go.sum
+LICENSE
