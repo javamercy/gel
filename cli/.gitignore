@@ -29,3 +29,5 @@
 # Local caches and logs
 /.cache/
 *.log
+
+/graphify-out
