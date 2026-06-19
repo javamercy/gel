@@ -1,0 +1,47 @@
+# .NET build output
+**/bin/
+**/obj/
+/artifacts/
+/publish/
+
+# .NET test and coverage output
+TestResults/
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+*.trx
+*.opencover.xml
+*.cobertura.xml
+
+# NuGet packages and generated package artifacts
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# IDE and user-specific .NET files
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET local configuration and secrets
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Logs and runtime files
+logs/
+*.log
+*.pid
+*.pid.lock

@@ -1,0 +1,31 @@
+# Go build artifacts
+/bin/
+/dist/
+/build/
+/gel
+*.exe
+*.test
+*.out
+
+# Go coverage and profiling output
+/coverage.out
+/coverage.txt
+*.coverprofile
+*.prof
+
+# Generated command documentation
+/docs/commands/
+
+# Local Gel repositories created while testing the CLI
+/.gel/
+**/.gel/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local caches and logs
+/.cache/
+*.log
