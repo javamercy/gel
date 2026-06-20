@@ -13,8 +13,8 @@ const (
 )
 
 // IsValid reports whether objectType is one of the supported values.
-func (objectType ObjectType) IsValid() bool {
-	switch objectType {
+func (t ObjectType) IsValid() bool {
+	switch t {
 	case ObjectTypeBlob, ObjectTypeTree, ObjectTypeCommit:
 		return true
 	default:
@@ -23,17 +23,15 @@ func (objectType ObjectType) IsValid() bool {
 }
 
 // String returns the underlying string value.
-func (objectType ObjectType) String() string {
-	return string(objectType)
+func (t ObjectType) String() string {
+	return string(t)
 }
 
 // ParseObjectType converts typeStr to an ObjectType and reports whether it is valid.
 func ParseObjectType(s string) (ObjectType, bool) {
 	objectType := ObjectType(s)
-	switch objectType {
-	case ObjectTypeBlob, ObjectTypeTree, ObjectTypeCommit:
+	if objectType.IsValid() {
 		return objectType, true
-	default:
-		return "", false
 	}
+	return "", false
 }
