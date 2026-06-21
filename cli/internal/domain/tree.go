@@ -109,7 +109,7 @@ func (t *Tree) Entries() []TreeEntry {
 
 // Serialize returns the full object serialization in the form "<type> <size>\x00<body>".
 func (t *Tree) Serialize() []byte {
-	return SerializeObject(ObjectTypeTree, t.body)
+	return serializeObject(ObjectTypeTree, t.body)
 }
 
 func serializeTreeEntries(entries []TreeEntry) []byte {
