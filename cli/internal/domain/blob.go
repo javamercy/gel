@@ -27,7 +27,7 @@ func (b *Blob) Size() int {
 	return len(b.body)
 }
 
-// Serialize returns the full object serialization in the form "<type> <size>\x00<body>".
+// Serialize returns the blob in "<type> <size>\x00<body>" format.
 func (b *Blob) Serialize() []byte {
 	return serializeObject(ObjectTypeBlob, b.body)
 }
