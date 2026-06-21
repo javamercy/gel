@@ -188,7 +188,7 @@ func (d *DiffService) LoadSnapshots(options DiffOptions) (*Snapshot, *Snapshot, 
 
 	case DiffModeCommitVsCommit:
 		baseCommitPathHashes := make(core.PathHashes)
-		if !options.BaseCommitHash.IsEmpty() {
+		if !options.BaseCommitHash.IsZero() {
 			var err error
 			baseCommitPathHashes, err = d.treeResolver.ResolveCommit(options.BaseCommitHash)
 			if err != nil {

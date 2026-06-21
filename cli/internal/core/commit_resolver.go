@@ -88,7 +88,7 @@ func (r *CommitResolver) resolveBase(base string) (domain.Hash, error) {
 }
 
 func (r *CommitResolver) ensureCommit(hash domain.Hash) error {
-	if hash.IsEmpty() {
+	if hash.IsZero() {
 		return errors.New("empty hash")
 	}
 	if _, err := r.objectService.ReadCommit(hash); err != nil {
@@ -148,7 +148,7 @@ func parsePositiveInteger(s string, defaultValue int) (int, error) {
 }
 
 func isFullHash(s string) bool {
-	if len(s) != domain.SHA256HexLength {
+	if len(s) != domain.HashHexLength {
 		return false
 	}
 

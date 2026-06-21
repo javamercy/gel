@@ -1,48 +1,66 @@
 package domain
 
 import (
+	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
 )
 
-var (
-	// ErrInvalidHashLength is returned when a hash input has an invalid length.
-	ErrInvalidHashLength = errors.New("invalid hash length")
-
-	// ErrInvalidHashEncoding is returned when a hex-encoded hash contains invalid characters.
-	ErrInvalidHashEncoding = errors.New("invalid hash encoding")
+const (
+	// HashByteLength is the length of a SHA-256 hash in raw bytes.
+	HashByteLength = sha256.Size
+	// HashHexLength is the length of a SHA-256 hash encoded as hexadecimal.
+	HashHexLength = HashByteLength * 2
 )
 
-// Hash represents a SHA-256 hash stored as a fixed-length byte array.
-type Hash [SHA256ByteLength]byte
+// ErrInvalidHash indicates an invalid SHA-256 hash representation.
+var ErrInvalidHash = errors.New("invalid hash")
 
-// NewHashFromHex creates a new Hash from the provided hexadecimal string and returns an error if the input is invalid.
+// Hash represents a SHA-256 object identifier.
+type Hash [HashByteLength]byte
+
+// NewHashFromHex constructs a Hash from its 64-character lowercase
+// hexadecimal representation.
 func NewHashFromHex(hexHash string) (Hash, error) {
-	if len(hexHash) != SHA256HexLength {
+	if len(hexHash) != HashHexLength {
 		return Hash{}, fmt.Errorf(
 			"%w: got %d characters, want %d",
-			ErrInvalidHashLength,
+			ErrInvalidHash,
 			len(hexHash),
-			SHA256HexLength,
+			HashHexLength,
 		)
+	}
+
+	for _, c := range hexHash {
+		if !isLowerHex(c) {
+			return Hash{}, fmt.Errorf(
+				"%w: expected lowercase hexadecimal characters",
+				ErrInvalidHash,
+			)
+		}
 	}
 
 	decoded, err := hex.DecodeString(hexHash)
 	if err != nil {
-		return Hash{}, fmt.Errorf("%w: %q", ErrInvalidHashEncoding, hexHash)
+		return Hash{}, fmt.Errorf(
+			"%w: decode hexadecimal representation: %v",
+			ErrInvalidHash,
+			err,
+		)
 	}
+
 	return NewHashFromBytes(decoded)
 }
 
-// NewHashFromBytes creates a new Hash from the provided byte slice and returns an error if the input has an invalid length.
+// NewHashFromBytes constructs a Hash from its 32-byte binary representation.
 func NewHashFromBytes(data []byte) (Hash, error) {
-	if len(data) != SHA256ByteLength {
+	if len(data) != HashByteLength {
 		return Hash{}, fmt.Errorf(
 			"%w: got %d bytes, want %d",
-			ErrInvalidHashLength,
+			ErrInvalidHash,
 			len(data),
-			SHA256ByteLength,
+			HashByteLength,
 		)
 	}
 
@@ -51,22 +69,21 @@ func NewHashFromBytes(data []byte) (Hash, error) {
 	return hash, nil
 }
 
-// Hex returns the hex-encoded form of h.
+// Hex returns the lowercase hexadecimal representation of h.
 func (h Hash) Hex() string {
 	return hex.EncodeToString(h[:])
 }
 
-// IsEmpty reports whether h is the zero Hash.
-func (h Hash) IsEmpty() bool {
+// IsZero reports whether h is the zero-value Hash.
+func (h Hash) IsZero() bool {
 	return h == Hash{}
 }
 
-// Equals reports whether h and o are identical.
-func (h Hash) Equals(o Hash) bool {
-	return h == o
-}
-
-// String returns the hex-encoded form of h.
+// String returns the lowercase hexadecimal representation of h.
 func (h Hash) String() string {
 	return h.Hex()
+}
+
+func isLowerHex(c rune) bool {
+	return c >= '0' && c <= '9' || c >= 'a' && c <= 'f'
 }

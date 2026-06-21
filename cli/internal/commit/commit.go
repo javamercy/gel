@@ -52,13 +52,13 @@ func (c *CommitService) Commit(message string) error {
 		return fmt.Errorf("commit: failed to write tree: %w", err)
 	}
 
-	if !parentHash.IsEmpty() {
+	if !parentHash.IsZero() {
 		parentHashes = append(parentHashes, parentHash)
 		parentCommit, err := c.objectService.ReadCommit(parentHash)
 		if err != nil {
 			return fmt.Errorf("commit: failed to read parent commit '%s': %w", parentHash, err)
 		}
-		if parentCommit.TreeHash.Equals(treeHash) {
+		if parentCommit.TreeHash == treeHash {
 			return ErrNothingToCommit
 		}
 	}

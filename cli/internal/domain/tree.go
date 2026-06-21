@@ -165,21 +165,21 @@ func parseTreeEntries(body []byte) ([]TreeEntry, error) {
 		previousSortName = sortName
 		hasPrevious = true
 		offset += nullOffset + 1
-		if offset+SHA256ByteLength > len(body) {
+		if offset+HashByteLength > len(body) {
 			return nil, fmt.Errorf(
 				"%w: expected %d bytes at offset %d, got %d",
 				ErrTreeTruncatedHash,
-				SHA256ByteLength,
+				HashByteLength,
 				offset,
 				len(body)-offset,
 			)
 		}
 
-		hash, err := NewHashFromBytes(body[offset : offset+SHA256ByteLength])
+		hash, err := NewHashFromBytes(body[offset : offset+HashByteLength])
 		if err != nil {
 			return nil, err
 		}
-		offset += SHA256ByteLength
+		offset += HashByteLength
 		entries = append(entries, NewTreeEntry(fileMode, hash, name))
 	}
 	return entries, nil

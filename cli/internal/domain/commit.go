@@ -107,11 +107,11 @@ func NewCommitFromFields(commitFields CommitFields) (*Commit, error) {
 // validateCommitFields validates logical commit invariants before serialization:
 // non-empty tree hash, no empty parent hashes, and valid author/committer identities.
 func validateCommitFields(fields CommitFields) error {
-	if fields.TreeHash.IsEmpty() {
+	if fields.TreeHash.IsZero() {
 		return ErrInvalidCommitFormat
 	}
 	for _, parentHash := range fields.ParentHashes {
-		if parentHash.IsEmpty() {
+		if parentHash.IsZero() {
 			return ErrInvalidCommitFormat
 		}
 	}

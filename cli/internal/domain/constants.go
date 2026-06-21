@@ -3,14 +3,6 @@ package domain
 import "os"
 
 const (
-	// SHA256HexLength is the length of a SHA-256 hash encoded as hexadecimal.
-	SHA256HexLength = 64
-
-	// SHA256ByteLength is the length of a SHA-256 hash in raw bytes.
-	SHA256ByteLength = 32
-)
-
-const (
 	// GelDirName is the repository metadata directory name.
 	GelDirName string = ".gel"
 

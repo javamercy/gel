@@ -58,7 +58,7 @@ const (
 	IndexEntryUserIDSize            = 4  // uint32
 	IndexEntryGroupIDSize           = 4  // uint32
 	IndexEntrySizeFieldSize         = 8  // uint64
-	IndexEntryHashSize              = SHA256ByteLength
+	IndexEntryHashSize              = HashByteLength
 	IndexEntryFlagsSize             = 2
 	IndexEntryPathNullTerminateSize = 1
 	IndexEntryHashOffset            = 2*IndexEntryTimeSize + IndexEntryDeviceSize + IndexEntryInodeSize + IndexEntryModeSize + IndexEntryUserIDSize + IndexEntryGroupIDSize + IndexEntrySizeFieldSize

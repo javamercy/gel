@@ -121,7 +121,7 @@ func (b *BranchService) Create(name string, startPoint string) error {
 			}
 			return fmt.Errorf("branch: failed to resolve HEAD: %w", err)
 		}
-		if commitHash.IsEmpty() {
+		if commitHash.IsZero() {
 			return fmt.Errorf("branch: '%s': %w", name, ErrNoCommitsYet)
 		}
 		if err := b.refService.Write(ref, commitHash); err != nil {

@@ -28,7 +28,7 @@ func (u *UpdateRefService) UpdateSafe(ref string, newHash, oldHash domain.Hash) 
 	if err != nil {
 		return err
 	}
-	if !currentHash.Equals(oldHash) {
+	if currentHash != oldHash {
 		return fmt.Errorf("update-ref: '%s': %w", ref, ErrRefUpdateConflict)
 	}
 	return u.refService.Write(ref, newHash)
@@ -45,7 +45,7 @@ func (u *UpdateRefService) DeleteSafe(ref string, oldHash domain.Hash) error {
 	if err != nil {
 		return err
 	}
-	if !currentHash.Equals(oldHash) {
+	if currentHash != oldHash {
 		return fmt.Errorf("update-ref: '%s': %w", ref, ErrRefUpdateConflict)
 	}
 	return u.refService.Delete(ref)
