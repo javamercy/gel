@@ -95,9 +95,10 @@ func (r *CommitResolver) ensureCommit(hash domain.Hash) error {
 		if errors.Is(err, os.ErrNotExist) {
 			return fmt.Errorf("commit not found: %w", err)
 		}
-		if errors.Is(err, domain.ErrObjectTypeMismatch) {
+		// TODO: return proper error
+		/* if errors.Is(err, domain.ErrObjectTypeMismatch) {
 			return fmt.Errorf("object is not a commit: %w", err)
-		}
+		} */
 		return err
 	}
 	return nil

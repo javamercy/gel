@@ -137,7 +137,7 @@ func parseTreeEntries(body []byte) ([]TreeEntry, error) {
 		}
 
 		modeText := string(body[offset : offset+spaceOffset])
-		fileMode, err := NewFileModeFromTreeMode(modeText)
+		fileMode, err := ParseFileMode(modeText)
 		if err != nil {
 			return nil, err
 		}
@@ -189,7 +189,7 @@ func validateTreeEntries(entries []TreeEntry) error {
 	seenNames := make(map[string]struct{}, len(entries))
 	for _, entry := range entries {
 		if !entry.Mode.IsValid() {
-			return fmt.Errorf("%w: %06o", ErrInvalidFileMode, entry.Mode.Uint32())
+			return fmt.Errorf("%w: %s", ErrInvalidFileMode, entry.Mode)
 		}
 		if err := validateTreeEntryName(entry.Name); err != nil {
 			return fmt.Errorf("%w: %q", err, entry.Name)

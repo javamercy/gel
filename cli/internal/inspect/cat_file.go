@@ -80,7 +80,8 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 	case domain.ObjectTypeTree:
 		tree, ok := object.(*domain.Tree)
 		if !ok {
-			return fmt.Errorf("cat file: %w: expected %s, got %T", domain.ErrObjectTypeMismatch, domain.ObjectTypeTree, object)
+			// TODO: return proper error
+			return fmt.Errorf("cat-file: object is not a tree")
 		}
 
 		for _, entry := range tree.Entries() {
@@ -102,7 +103,8 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 	case domain.ObjectTypeBlob:
 		blob, ok := object.(*domain.Blob)
 		if !ok {
-			return fmt.Errorf("cat file: %w: expected %s, got %T", domain.ErrObjectTypeMismatch, domain.ObjectTypeBlob, object)
+			// TODO: return proper error
+			return fmt.Errorf("cat-file: object is not a blob")
 		}
 		if _, err := writer.Write(blob.Body()); err != nil {
 			return fmt.Errorf("cat file: %w", err)
@@ -110,7 +112,8 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 	case domain.ObjectTypeCommit:
 		commit, ok := object.(*domain.Commit)
 		if !ok {
-			return fmt.Errorf("cat file: %w: expected %s, got %T", domain.ErrObjectTypeMismatch, domain.ObjectTypeCommit, object)
+			// TODO: return proper error
+			return fmt.Errorf("cat-file: object is not a commit")
 		}
 		if _, err := fmt.Fprintf(
 			writer,

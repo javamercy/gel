@@ -40,7 +40,7 @@ func (r *ReadTreeService) ReadTree(hash domain.Hash) error {
 			normPath,
 			entry.Hash,
 			0,
-			entry.Mode.Uint32(),
+			uint32(entry.Mode),
 			0,
 			0,
 			0,

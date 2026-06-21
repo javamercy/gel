@@ -220,7 +220,7 @@ func (r *RestoreService) restoreCommitVsIndex(commitHash domain.Hash, paths []do
 		case inCommit && inIndex && indexEntry.Hash == treeEntry.Hash:
 			continue
 		case inCommit:
-			newIndexEntry := domain.NewEmptyIndexEntry(normalizedPath, treeEntry.Hash, treeEntry.Mode.Uint32())
+			newIndexEntry := domain.NewEmptyIndexEntry(normalizedPath, treeEntry.Hash, uint32(treeEntry.Mode))
 			index.SetEntry(newIndexEntry)
 		default:
 			index.RemoveEntry(normalizedPath)

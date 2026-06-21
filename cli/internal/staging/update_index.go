@@ -6,6 +6,7 @@ import (
 	"Gel/internal/validate"
 	"errors"
 	"fmt"
+	"io/fs"
 )
 
 // UpdateIndexOptions controls update-index behavior.
@@ -121,7 +122,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 			index.RemoveEntry(path)
 
 			// TODO: fix here
-			fileMode, err := domain.NewFileModeFromOSMode(stat.Mode)
+			fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
 			if err != nil {
 				return nil, fmt.Errorf("update-index: %w", err)
 			}
@@ -130,7 +131,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 				path,
 				changeResult.NewHash,
 				stat.Size,
-				fileMode.Uint32(),
+				uint32(fileMode),
 				stat.Device,
 				stat.Inode,
 				stat.UserID,
@@ -156,7 +157,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 			}
 
 			// TODO: fix here
-			fileMode, err := domain.NewFileModeFromOSMode(stat.Mode)
+			fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
 			if err != nil {
 				return nil, fmt.Errorf("update-index: %w", err)
 			}
@@ -164,7 +165,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 				path,
 				hash,
 				stat.Size,
-				fileMode.Uint32(),
+				uint32(fileMode),
 				stat.Device,
 				stat.Inode,
 				stat.UserID,
