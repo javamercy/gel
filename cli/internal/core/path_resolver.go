@@ -44,13 +44,13 @@ type ResolvedPath struct {
 
 // PathResolver expands pathspecs to normalized repository-relative paths.
 type PathResolver struct {
-	repoDir         domain.AbsolutePath
+	paths           *RepositoryPathResolver
 	ignoredPatterns map[string]bool
 }
 
 // NewPathResolver creates a resolver rooted at repoDir.
 // When ignoredPatterns is nil, a default set of VCS/editor directories is used.
-func NewPathResolver(repoDir domain.AbsolutePath, ignoredPatterns map[string]bool) *PathResolver {
+func NewPathResolver(paths *RepositoryPathResolver, ignoredPatterns map[string]bool) *PathResolver {
 	if ignoredPatterns == nil {
 		// TODO: implement gelignore.
 		ignoredPatterns = map[string]bool{
@@ -60,7 +60,7 @@ func NewPathResolver(repoDir domain.AbsolutePath, ignoredPatterns map[string]boo
 		}
 	}
 	return &PathResolver{
-		repoDir:         repoDir,
+		paths:           paths,
 		ignoredPatterns: ignoredPatterns,
 	}
 }
@@ -87,14 +87,16 @@ func (p *PathResolver) Resolve(pathspecs []string) ([]ResolvedPath, error) {
 
 		normalizedPaths := make(map[domain.NormalizedPath]bool)
 		for _, path := range paths {
-			normalizedPath, err := domain.NewNormalizedPath(path, p.repoDir)
+			resolved, err := p.paths.Resolve(path)
 			if err != nil {
 				return nil, err
 			}
-			if p.shouldIgnore(normalizedPath.String()) || normalizedPaths[normalizedPath] {
+
+			normPath := resolved.Normalized
+			if p.shouldIgnore(normPath.String()) || normalizedPaths[normPath] {
 				continue
 			}
-			normalizedPaths[normalizedPath] = true
+			normalizedPaths[normPath] = true
 		}
 		resolvedPaths = append(
 			resolvedPaths, ResolvedPath{
@@ -143,11 +145,11 @@ func (p *PathResolver) normalizeScope(pathspec string, pathspecType PathspecType
 		PathspecTypeDirectory,
 		PathspecTypeGlobPattern,
 		PathspecTypeNonExistent:
-		normPath, err := domain.NewNormalizedPath(pathspec, p.repoDir)
+		resolved, err := p.paths.Resolve(pathspec)
 		if err != nil {
 			return "", err
 		}
-		return normPath.String(), nil
+		return resolved.Normalized.String(), nil
 	default:
 		return "", ErrUnknownPathspecType
 	}

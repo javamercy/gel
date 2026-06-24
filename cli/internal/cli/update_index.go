@@ -19,17 +19,17 @@ var updateIndexCmd = &cobra.Command{
 	Short: "Update the index with the current state of the working directory",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		normalizedPaths := make([]domain.NormalizedPath, len(args))
+		normPaths := make([]domain.NormalizedPath, len(args))
 		for i, path := range args {
-			normalizedPath, err := domain.NewNormalizedPath(path, workspace.RepoDir)
+			resolved, err := repositoryPathResolver.Resolve(path)
 			if err != nil {
 				return err
 			}
-			normalizedPaths[i] = normalizedPath
+			normPaths[i] = resolved.Normalized
 		}
 
 		paths, err := updateIndexService.UpdateIndex(
-			normalizedPaths,
+			normPaths,
 			staging.UpdateIndexOptions{
 				Add:    updateIndexAddFlag,
 				Remove: updateIndexRemoveFlag,

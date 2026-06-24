@@ -21,14 +21,15 @@ var (
 	workspace *domain.Workspace
 )
 var (
-	objectService     *core.ObjectService
-	indexService      *core.IndexService
-	configService     *core.ConfigService
-	refService        *core.RefService
-	hashObjectService *core.HashObjectService
-	treeResolver      *core.TreeResolver
-	pathResolver      *core.PathResolver
-	changeDetector    *core.ChangeDetector
+	objectService          *core.ObjectService
+	indexService           *core.IndexService
+	configService          *core.ConfigService
+	refService             *core.RefService
+	hashObjectService      *core.HashObjectService
+	treeResolver           *core.TreeResolver
+	pathResolver           *core.PathResolver
+	changeDetector         *core.ChangeDetector
+	repositoryPathResolver *core.RepositoryPathResolver
 )
 
 var (
@@ -103,6 +104,16 @@ func initializeServices() error {
 		return err
 	}
 
+	baseDir, err := domain.NewAbsolutePath(cwd)
+	if err != nil {
+		return err
+	}
+
+	repositoryPathResolver, err = core.NewRepositoryPathResolver(baseDir, workspace.RepoDir)
+	if err != nil {
+		return err
+	}
+
 	objectStorage := storage.NewObjectStorage(workspace)
 	indexStorage := storage.NewIndexStorage(workspace)
 	configStorage := storage.NewConfigStorage(workspace)
@@ -112,7 +123,7 @@ func initializeServices() error {
 	configService = core.NewConfigService(configStorage)
 	refService = core.NewRefService(workspace)
 	hashObjectService = core.NewHashObjectService(objectService)
-	pathResolver = core.NewPathResolver(workspace.RepoDir, nil)
+	pathResolver = core.NewPathResolver(repositoryPathResolver, nil)
 	changeDetector = core.NewChangeDetector(objectService, workspace.RepoDir)
 	treeResolver = core.NewTreeResolver(
 		objectService, indexService, refService, pathResolver, changeDetector, workspace,
