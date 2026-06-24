@@ -131,7 +131,7 @@ func (l *LsFilesService) lsFilesWithModified(entries []*domain.IndexEntry) ([]st
 func (l *LsFilesService) lsFilesWithDeleted(entries []*domain.IndexEntry) ([]string, error) {
 	files := make([]string, 0)
 	for _, entry := range entries {
-		absolutePath, err := entry.Path.ToAbsolutePath(l.workspace.RepoDir)
+		absolutePath, err := entry.Path.ToAbsolutePath(l.workspace.RepoRoot())
 		if err != nil {
 			return nil, fmt.Errorf("ls-files: %w", err)
 		}

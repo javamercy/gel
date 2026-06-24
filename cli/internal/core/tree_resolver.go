@@ -104,7 +104,7 @@ func (t *TreeResolver) ResolveIndex() (PathHashes, error) {
 // ResolveWorkingTree returns repository-wide working tree path hashes.
 // The scan is rooted at repository root so results are independent of current working directory.
 func (t *TreeResolver) ResolveWorkingTree() (PathHashes, error) {
-	resolvedPaths, err := t.pathResolver.Resolve([]string{t.workspace.RepoDir.String()})
+	resolvedPaths, err := t.pathResolver.Resolve([]string{t.workspace.RepoRoot().String()})
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func (t *TreeResolver) ResolveWorkingTree() (PathHashes, error) {
 					delete(pathHashes, path)
 				}
 			} else {
-				absolutePath, err := path.ToAbsolutePath(t.workspace.RepoDir)
+				absolutePath, err := path.ToAbsolutePath(t.workspace.RepoRoot())
 				if err != nil {
 					return nil, err
 				}

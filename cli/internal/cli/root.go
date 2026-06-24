@@ -99,7 +99,7 @@ func initializeServices() error {
 		return err
 	}
 
-	workspace, err = domain.NewWorkspace(cwd)
+	workspace, err = core.DiscoverWorkspace(cwd)
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func initializeServices() error {
 		return err
 	}
 
-	repositoryPathResolver, err = core.NewRepositoryPathResolver(baseDir, workspace.RepoDir)
+	repositoryPathResolver, err = core.NewRepositoryPathResolver(baseDir, workspace.RepoRoot())
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func initializeServices() error {
 	refService = core.NewRefService(workspace)
 	hashObjectService = core.NewHashObjectService(objectService)
 	pathResolver = core.NewPathResolver(repositoryPathResolver, nil)
-	changeDetector = core.NewChangeDetector(objectService, workspace.RepoDir)
+	changeDetector = core.NewChangeDetector(objectService, workspace.RepoRoot())
 	treeResolver = core.NewTreeResolver(
 		objectService, indexService, refService, pathResolver, changeDetector, workspace,
 	)

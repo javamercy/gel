@@ -196,7 +196,7 @@ func (s *SwitchService) checkoutWorkingTree(oldCommitHash, targetCommitHash doma
 			return err
 		}
 
-		absPath, err := targetPath.ToAbsolutePath(s.workspace.RepoDir)
+		absPath, err := targetPath.ToAbsolutePath(s.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
@@ -214,7 +214,7 @@ func (s *SwitchService) checkoutWorkingTree(oldCommitHash, targetCommitHash doma
 			continue
 		}
 
-		absPath, err := oldPath.ToAbsolutePath(s.workspace.RepoDir)
+		absPath, err := oldPath.ToAbsolutePath(s.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}

@@ -97,7 +97,7 @@ func (r *RestoreService) restoreIndexVsWorkingTree(paths []domain.AbsolutePath) 
 		return err
 	}
 	for _, path := range paths {
-		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoDir)
+		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
@@ -154,7 +154,7 @@ func (r *RestoreService) restoreCommitVsWorkingTree(commitHash domain.Hash, path
 	}
 
 	for _, path := range paths {
-		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoDir)
+		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
@@ -200,7 +200,7 @@ func (r *RestoreService) restoreCommitVsIndex(commitHash domain.Hash, paths []do
 		return err
 	}
 	for _, path := range paths {
-		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoDir)
+		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}

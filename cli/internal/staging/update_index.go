@@ -84,7 +84,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 ) {
 	var addedPaths []domain.NormalizedPath
 	for _, path := range paths {
-		absolutePath, err := path.ToAbsolutePath(u.workspace.RepoDir)
+		absolutePath, err := path.ToAbsolutePath(u.workspace.RepoRoot())
 		if err != nil {
 			return nil, fmt.Errorf("update-index: %w", err)
 		}

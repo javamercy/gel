@@ -129,14 +129,14 @@ func (r *ResetService) checkoutWorkingTree(targetHash domain.Hash) error {
 	writePaths := collectWritePaths(targetPathHashes, workingTreePathHashes)
 
 	for _, path := range deletePaths {
-		absPath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+		absPath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
 		if err := os.Remove(absPath.String()); err != nil && !errors.Is(err, os.ErrNotExist) {
 			return fmt.Errorf("failed to delete '%s': %w", absPath, err)
 		}
-		if err := pruneEmptyParentDirs(absPath.String(), r.workspace.RepoDir.String()); err != nil {
+		if err := pruneEmptyParentDirs(absPath.String(), r.workspace.RepoRoot().String()); err != nil {
 			return fmt.Errorf("failed to prune empty parents for '%s': %w", absPath, err)
 		}
 	}
@@ -147,7 +147,7 @@ func (r *ResetService) checkoutWorkingTree(targetHash domain.Hash) error {
 			return err
 		}
 
-		absPath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+		absPath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}

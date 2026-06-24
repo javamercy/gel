@@ -153,7 +153,7 @@ func (r *RemoveService) normalizePathspec(pathspec string) (domain.NormalizedPat
 		return domain.NormalizedPath{}, err
 	}
 
-	relPath, err := filepath.Rel(r.workspace.RepoDir.String(), absPath)
+	relPath, err := filepath.Rel(r.workspace.RepoRoot().String(), absPath)
 	if err != nil {
 		return domain.NormalizedPath{}, err
 	}
@@ -251,7 +251,7 @@ func (r *RemoveService) captureFileBackups(paths []domain.NormalizedPath) (
 ) {
 	backups := make(map[domain.NormalizedPath]fileBackup)
 	for _, path := range paths {
-		absPath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+		absPath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return nil, err
 		}
@@ -279,7 +279,7 @@ func (r *RemoveService) captureFileBackups(paths []domain.NormalizedPath) (
 // deleteWorkingTreeFiles removes the target files from disk and ignores already-missing paths.
 func (r *RemoveService) deleteWorkingTreeFiles(paths []domain.NormalizedPath) error {
 	for _, path := range paths {
-		absolutePath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+		absolutePath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
@@ -295,7 +295,7 @@ func (r *RemoveService) deleteWorkingTreeFiles(paths []domain.NormalizedPath) er
 // pruneEmptyDirectories removes empty directories created by recursive removals within requested roots.
 func (r *RemoveService) pruneEmptyDirectories(paths, pruneRoots []domain.NormalizedPath) error {
 	for _, pruneRoot := range pruneRoots {
-		rootPath, err := pruneRoot.ToAbsolutePath(r.workspace.RepoDir)
+		rootPath, err := pruneRoot.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
@@ -305,13 +305,13 @@ func (r *RemoveService) pruneEmptyDirectories(paths, pruneRoots []domain.Normali
 				continue
 			}
 
-			absolutePath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+			absolutePath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 			if err != nil {
 				return err
 			}
 			if err := pruneEmptyParentDirsWithin(
 				absolutePath.String(),
-				r.workspace.RepoDir.String(),
+				r.workspace.RepoRoot().String(),
 				rootPath.String(),
 			); err != nil {
 				return fmt.Errorf("failed to prune empty directories for '%s': %w", absolutePath, err)
@@ -341,7 +341,7 @@ func (r *RemoveService) restoreFileBackups(backups map[domain.NormalizedPath]fil
 
 	for _, path := range domain.SortedPathSet(paths) {
 		backup := backups[path]
-		absPath, err := path.ToAbsolutePath(r.workspace.RepoDir)
+		absPath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}

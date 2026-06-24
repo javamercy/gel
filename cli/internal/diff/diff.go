@@ -247,7 +247,7 @@ func (d *DiffService) LoadBlobContent(_ domain.NormalizedPath, hash domain.Hash)
 
 // LoadFileContent loads file text from the working tree using repository-root resolution.
 func (d *DiffService) LoadFileContent(path domain.NormalizedPath, _ domain.Hash) (string, error) {
-	absolutePath, err := path.ToAbsolutePath(d.workspace.RepoDir)
+	absolutePath, err := path.ToAbsolutePath(d.workspace.RepoRoot())
 	if err != nil {
 		return "", err
 	}

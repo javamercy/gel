@@ -70,7 +70,7 @@ func (o *ObjectStorage) hashToObjectPath(hash domain.Hash) (domain.AbsolutePath,
 	hexHash := hash.Hex()
 	dir := hexHash[:2]
 	file := hexHash[2:]
-	joined := filepath.Join(o.workspace.ObjectsDir.String(), dir, file)
+	joined := filepath.Join(o.workspace.ObjectsDir().String(), dir, file)
 	absPath, err := domain.NewAbsolutePath(joined)
 	if err != nil {
 		return domain.AbsolutePath{}, err

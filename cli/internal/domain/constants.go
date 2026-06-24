@@ -3,25 +3,6 @@ package domain
 import "os"
 
 const (
-	// GelDirName is the repository metadata directory name.
-	GelDirName string = ".gel"
-
-	// ObjectsDirName is the object storage directory name.
-	ObjectsDirName string = "objects"
-
-	// RefsDirName is the references directory name.
-	RefsDirName string = "refs"
-
-	// HeadFileName is the symbolic HEAD reference filename.
-	HeadFileName string = "HEAD"
-
-	// HeadsDirName is the refs/heads directory name.
-	HeadsDirName string = "heads"
-
-	// IndexFileName is the index file name.
-	IndexFileName string = "index"
-
-	// ConfigFileName is the repository config file name.
 	ConfigFileName string = "config.toml"
 )
 
