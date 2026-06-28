@@ -64,9 +64,7 @@ func (r *RepositoryPathResolver) resolveAbsolute(input string) (domain.AbsoluteP
 			input,
 		)
 	}
-
-	joined := filepath.Join(r.baseDir.String(), input)
-	return domain.NewAbsolutePath(joined)
+	return r.baseDir.Join(input)
 }
 
 func isRootedButNotAbsolute(path string) bool {

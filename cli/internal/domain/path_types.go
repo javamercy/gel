@@ -154,6 +154,22 @@ func (p AbsolutePath) String() string {
 	return p.value
 }
 
+// Join returns p joined with the provided path elements.
+//
+// The result is validated to ensure it remains an absolute path.
+// If join fails, it returns an error matching ErrInvalidAbsolutePath.
+func (p AbsolutePath) Join(elements ...string) (AbsolutePath, error) {
+	if p.value == "" {
+		return AbsolutePath{}, fmt.Errorf(
+			"%w: base path is the zero value",
+			ErrInvalidAbsolutePath,
+		)
+	}
+
+	joined := filepath.Join(append([]string{p.value}, elements...)...)
+	return NewAbsolutePath(joined)
+}
+
 // ToNormalizedPath converts p to a repository-relative normalized path.
 //
 // It returns an error matching ErrPathOutsideRepository when p cannot be
