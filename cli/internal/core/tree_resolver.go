@@ -80,7 +80,7 @@ func (t *TreeResolver) ResolveCommit(hash domain.Hash) (PathHashes, error) {
 			if err != nil {
 				return err
 			}
-			pathHashes[normalizedPath] = e.Hash
+			pathHashes[normalizedPath] = e.Hash()
 			return nil
 		},
 	)
@@ -161,11 +161,11 @@ func (t *TreeResolver) lookupPathInTreeRecursive(treeHash domain.Hash, segments 
 		return domain.TreeEntry{}, err
 	}
 	for _, entry := range tree.Entries() {
-		if entry.Name == segments[0] {
+		if entry.Name() == segments[0] {
 			if len(segments) == 1 {
 				return entry, nil
 			}
-			return t.lookupPathInTreeRecursive(entry.Hash, segments[1:])
+			return t.lookupPathInTreeRecursive(entry.Hash(), segments[1:])
 		}
 	}
 	return domain.TreeEntry{}, ErrPathNotFoundInTree

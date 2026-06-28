@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
-	"slices"
 	"strings"
 )
 
@@ -113,9 +112,10 @@ func (s *ShowService) Show(objectRef string, options ShowOptions) (*ShowResult, 
 			Blob: &ShowBlobResult{Hash: resolved.Hash, Body: obj.Body()},
 		}, nil
 	case *domain.Tree:
+		domain.SortTreeEntriesByName(obj.Entries())
 		return &ShowResult{
 			Mode: ShowModeTree,
-			Tree: &ShowTreeResult{Hash: resolved.Hash, TreeEntries: sortTreeEntries(obj.Entries())},
+			Tree: &ShowTreeResult{Hash: resolved.Hash, TreeEntries: obj.Entries()},
 		}, nil
 	case *domain.Commit:
 		commitResult, err := s.buildShowCommitResult(resolved, obj)
@@ -201,14 +201,4 @@ func (s *ShowService) buildShowCommitResult(resolved resolvedObjectRef, commit *
 		Commit: commit,
 		Diff:   diffResults,
 	}, nil
-}
-
-// sortTreeEntries sorts entries by name for deterministic tree output.
-func sortTreeEntries(entries []domain.TreeEntry) []domain.TreeEntry {
-	slices.SortFunc(
-		entries, func(a, b domain.TreeEntry) int {
-			return strings.Compare(a.Name, b.Name)
-		},
-	)
-	return entries
 }

@@ -77,8 +77,8 @@ func printShowCommit(cmd *cobra.Command, r *inspect.ShowCommitResult) error {
 func printShowTree(cmd *cobra.Command, r *inspect.ShowTreeResult) {
 	cmd.Printf("tree %s\n\n", r.Hash)
 	for _, entry := range r.TreeEntries {
-		name := entry.Name
-		if entry.Mode.IsDirectory() {
+		name := entry.Name()
+		if entry.Mode().IsDirectory() {
 			name += "/"
 		}
 		cmd.Printf("%s\n", name)

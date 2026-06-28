@@ -3,7 +3,6 @@ package tree
 import (
 	"Gel/internal/core"
 	"Gel/internal/domain"
-	"sort"
 	"strings"
 )
 
@@ -62,15 +61,21 @@ func (w *WriteTreeService) writeTreeRecursive(root *directoryNode) (domain.Hash,
 			return domain.Hash{}, err
 		}
 
-		entry := domain.NewTreeEntry(domain.FileModeDirectory, subTreeHash, childDir.name)
+		entry, err := domain.NewTreeEntry(domain.FileModeDirectory, subTreeHash, childDir.name)
+		if err != nil {
+			return domain.Hash{}, err
+		}
 		entries = append(entries, entry)
 	}
 	for _, file := range root.files {
-		entry := domain.NewTreeEntry(file.mode, file.hash, file.name)
+		entry, err := domain.NewTreeEntry(file.mode, file.hash, file.name)
+		if err != nil {
+			return domain.Hash{}, err
+		}
 		entries = append(entries, entry)
 	}
 
-	sortTreeEntries(entries)
+	domain.SortTreeEntries(entries)
 
 	tree, err := domain.NewTreeFromEntries(entries)
 	if err != nil {
@@ -141,24 +146,4 @@ func buildRootTree(entries []*domain.IndexEntry) *directoryNode {
 		}
 	}
 	return root
-}
-
-// sortTreeEntries applies Git tree entry ordering.
-// Directory names are compared with a trailing slash so directories sort
-// consistently with file names in the same parent tree.
-func sortTreeEntries(entries []domain.TreeEntry) {
-	sort.Slice(
-		entries, func(i, j int) bool {
-			NameI := entries[i].Name
-			NameJ := entries[j].Name
-
-			if entries[i].Mode.IsDirectory() {
-				NameI += "/"
-			}
-			if entries[j].Mode.IsDirectory() {
-				NameJ += "/"
-			}
-			return NameI < NameJ
-		},
-	)
 }

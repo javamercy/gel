@@ -58,7 +58,7 @@ func DeserializeObject(data []byte) (Object, error) {
 	case ObjectTypeBlob:
 		return NewBlob(body), nil
 	case ObjectTypeTree:
-		return NewTree(body)
+		return ParseTree(body)
 	case ObjectTypeCommit:
 		return NewCommit(body)
 	default:

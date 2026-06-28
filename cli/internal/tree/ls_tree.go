@@ -35,7 +35,7 @@ func NewLsTreeService(objectService *core.ObjectService) *LsTreeService {
 func (l *LsTreeService) LsTree(hash domain.Hash, options LsTreeOptions) ([]string, error) {
 	var contents []string
 	processor := func(entry domain.TreeEntry, relPath string) error {
-		objectType, err := entry.Mode.ObjectType()
+		objectType, err := entry.Mode().ObjectType()
 		if err != nil {
 			return err
 		}

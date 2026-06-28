@@ -41,15 +41,15 @@ func (w *TreeWalker) Walk(hash domain.Hash, prefix string, processor Processor) 
 	}
 
 	for _, entry := range tree.Entries() {
-		relPath := path.Join(prefix, entry.Name)
+		relPath := path.Join(prefix, entry.Name())
 		shouldProcess := w.shouldProcess(entry)
 		if shouldProcess {
 			if err := processor(entry, relPath); err != nil {
 				return err
 			}
 		}
-		if entry.Mode.IsDirectory() && w.options.Recursive {
-			if err := w.Walk(entry.Hash, relPath, processor); err != nil {
+		if entry.Mode().IsDirectory() && w.options.Recursive {
+			if err := w.Walk(entry.Hash(), relPath, processor); err != nil {
 				return err
 			}
 		}
@@ -59,7 +59,7 @@ func (w *TreeWalker) Walk(hash domain.Hash, prefix string, processor Processor) 
 
 // shouldProcess determines if the given entry, based on its type, should be processed according to the walk options.
 func (w *TreeWalker) shouldProcess(entry domain.TreeEntry) bool {
-	isTree := entry.Mode.IsDirectory()
+	isTree := entry.Mode().IsDirectory()
 	if isTree {
 		return w.options.IncludeTrees || w.options.OnlyTrees
 	}

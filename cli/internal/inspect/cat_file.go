@@ -85,17 +85,17 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 		}
 
 		for _, entry := range tree.Entries() {
-			objectType, err := entry.Mode.ObjectType()
+			objectType, err := entry.Mode().ObjectType()
 			if err != nil {
 				return fmt.Errorf("cat file: %w", err)
 			}
 			if _, err := fmt.Fprintf(
 				writer,
 				"%s %s %s\t%s\n",
-				entry.Mode,
+				entry.Mode(),
 				objectType,
-				entry.Hash,
-				entry.Name,
+				entry.Hash(),
+				entry.Name(),
 			); err != nil {
 				return fmt.Errorf("cat file: %w", err)
 			}

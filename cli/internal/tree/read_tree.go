@@ -38,9 +38,9 @@ func (r *ReadTreeService) ReadTree(hash domain.Hash) error {
 
 		indexEntry := domain.NewIndexEntry(
 			normPath,
-			entry.Hash,
+			entry.Hash(),
 			0,
-			uint32(entry.Mode),
+			uint32(entry.Mode()),
 			0,
 			0,
 			0,
