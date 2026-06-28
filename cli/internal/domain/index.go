@@ -200,20 +200,39 @@ func (e *IndexEntry) serialize() ([]byte, error) {
 
 // MatchesStat compares the entry's stored metadata against a fresh stat call.
 // Returns true if the file appears unchanged (same device, inode, times, size, mode).
-func (e *IndexEntry) MatchesStat(stat *FileStat) bool {
-	if e.ChangedTime != stat.ChangedTime {
-		return false
-	}
-	if e.ModifiedTime != stat.ModifiedTime {
-		return false
-	}
+func (e *IndexEntry) MatchesStat(stat FileStat) bool {
+	// TODO: compare modes
 	if e.Size != stat.Size {
 		return false
 	}
-	if e.Device != stat.Device || e.Inode != stat.Inode {
+	if !e.ModifiedTime.Equal(stat.ModTime) {
 		return false
 	}
-	// TODO: compare filemode vs os stat mode
+	if !e.ChangedTime.IsZero() &&
+		!stat.ChangeTime.IsZero() &&
+		!e.ChangedTime.Equal(stat.ChangeTime) {
+		return false
+	}
+	if e.Device != 0 &&
+		stat.DeviceID != 0 &&
+		e.Device != stat.DeviceID {
+		return false
+	}
+	if e.Inode != 0 &&
+		stat.Inode != 0 &&
+		e.Inode != stat.Inode {
+		return false
+	}
+	if e.UserID != 0 &&
+		stat.UserID != 0 &&
+		e.UserID != stat.UserID {
+		return false
+	}
+	if e.GroupID != 0 &&
+		stat.GroupID != 0 &&
+		e.GroupID != stat.GroupID {
+		return false
+	}
 	return true
 }
 

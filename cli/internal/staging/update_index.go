@@ -93,7 +93,7 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 		}
 
 		var newEntry *domain.IndexEntry
-		stat, err := domain.NewFileStatFromPath(absolutePath)
+		stat, err := domain.ReadFileStat(absolutePath)
 		if err != nil {
 			return nil, fmt.Errorf("update-index: %w", err)
 		}
@@ -132,13 +132,13 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 				changeResult.NewHash,
 				stat.Size,
 				uint32(fileMode),
-				stat.Device,
+				stat.DeviceID,
 				stat.Inode,
 				stat.UserID,
 				stat.GroupID,
 				domain.ComputeIndexFlags(path.String(), 0),
-				stat.ChangedTime,
-				stat.ModifiedTime,
+				stat.ChangeTime,
+				stat.ModTime,
 			)
 		} else {
 			hash, _, err := u.objectService.ComputeObjectHash(absolutePath)
@@ -166,13 +166,13 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 				hash,
 				stat.Size,
 				uint32(fileMode),
-				stat.Device,
+				stat.DeviceID,
 				stat.Inode,
 				stat.UserID,
 				stat.GroupID,
 				domain.ComputeIndexFlags(path.String(), 0),
-				stat.ChangedTime,
-				stat.ModifiedTime,
+				stat.ChangeTime,
+				stat.ModTime,
 			)
 		}
 		index.SetEntry(newEntry)
