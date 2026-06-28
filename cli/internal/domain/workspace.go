@@ -23,6 +23,9 @@ const (
 
 	// IndexFileName is the staging index file name.
 	IndexFileName = "index"
+
+	// ConfigFileName is the repository configuration file name.
+	ConfigFileName string = "config.toml"
 )
 
 // Workspace describes the standard paths of a Gel repository.
@@ -49,7 +52,7 @@ func NewWorkspace(repoRoot AbsolutePath) (*Workspace, error) {
 		)
 	}
 
-	join := func(elements ...string) AbsolutePath {
+	joinWithRepoRoot := func(elements ...string) AbsolutePath {
 		parts := append([]string{repoRoot.value}, elements...)
 		return AbsolutePath{
 			value: filepath.Join(parts...),
@@ -58,13 +61,13 @@ func NewWorkspace(repoRoot AbsolutePath) (*Workspace, error) {
 
 	return &Workspace{
 		repoRoot:   repoRoot,
-		gelDir:     join(GelDirName),
-		objectsDir: join(GelDirName, ObjectsDirName),
-		refsDir:    join(GelDirName, RefsDirName),
-		headsDir:   join(GelDirName, RefsDirName, HeadsDirName),
-		headPath:   join(GelDirName, HeadFileName),
-		indexPath:  join(GelDirName, IndexFileName),
-		configPath: join(GelDirName, ConfigFileName),
+		gelDir:     joinWithRepoRoot(GelDirName),
+		objectsDir: joinWithRepoRoot(GelDirName, ObjectsDirName),
+		refsDir:    joinWithRepoRoot(GelDirName, RefsDirName),
+		headsDir:   joinWithRepoRoot(GelDirName, RefsDirName, HeadsDirName),
+		headPath:   joinWithRepoRoot(GelDirName, HeadFileName),
+		indexPath:  joinWithRepoRoot(GelDirName, IndexFileName),
+		configPath: joinWithRepoRoot(GelDirName, ConfigFileName),
 	}, nil
 }
 

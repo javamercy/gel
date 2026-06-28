@@ -3,10 +3,6 @@ package domain
 import "os"
 
 const (
-	ConfigFileName string = "config.toml"
-)
-
-const (
 	// DefaultBranchName is the default branch name.
 	DefaultBranchName string = "main"
 
