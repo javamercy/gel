@@ -28,6 +28,29 @@ type platformStatFields struct {
 	changeTime time.Time
 }
 
+// NewFileStat constructs a FileStat with the given metadata.
+func NewFileStat(
+	deviceID uint64,
+	inode uint64,
+	userID uint32,
+	groupID uint32,
+	mode FileMode,
+	size uint64,
+	changeTime time.Time,
+	modTime time.Time,
+) FileStat {
+	return FileStat{
+		DeviceID:   deviceID,
+		Inode:      inode,
+		UserID:     userID,
+		GroupID:    groupID,
+		Mode:       mode,
+		Size:       size,
+		ChangeTime: changeTime,
+		ModTime:    modTime,
+	}
+}
+
 // ReadFileStat retrieves file metadata for the given absolute path.
 func ReadFileStat(path AbsolutePath) (FileStat, error) {
 	if path.value == "" {
