@@ -8,10 +8,8 @@ import (
 	"strings"
 )
 
-var (
-	// ErrInvalidTree indicates malformed, inconsistent, or non-canonical tree data.
-	ErrInvalidTree = errors.New("invalid tree")
-)
+// ErrInvalidTree indicates malformed, inconsistent, or non-canonical tree data.
+var ErrInvalidTree = errors.New("invalid tree")
 
 // TreeEntry represents a single entry within a tree object.
 // Each entry corresponds to a file or subdirectory.
@@ -23,21 +21,19 @@ type TreeEntry struct {
 
 // NewTreeEntry validates and constructs a tree entry.
 func NewTreeEntry(mode FileMode, hash Hash, name string) (TreeEntry, error) {
-	if !mode.IsValid() {
-		return TreeEntry{}, fmt.Errorf(
-			"%w: %#o",
-			ErrInvalidFileMode,
-			uint32(mode),
-		)
-	}
-	if err := validateTreeEntryName(name); err != nil {
-		return TreeEntry{}, err
-	}
-	return TreeEntry{
+	entry := TreeEntry{
 		mode: mode,
 		hash: hash,
 		name: name,
-	}, nil
+	}
+
+	if err := validateTreeEntry(entry); err != nil {
+		return TreeEntry{}, fmt.Errorf(
+			"create tree entry: %w",
+			err,
+		)
+	}
+	return entry, nil
 }
 
 // Mode returns the entry's gel file mode.
@@ -61,15 +57,15 @@ type Tree struct {
 	entries []TreeEntry
 }
 
-// ParseTree parses and validates a serialized tree body.
+// DecodeTree decodes and validates a serialized tree body.
 //
-// The input is defensively copied. Serialized entries must already be in canonical order.
-func ParseTree(body []byte) (*Tree, error) {
+// The input is defensively copied. Encoded entries must already be in canonical order.
+func DecodeTree(body []byte) (*Tree, error) {
 	bodyCopy := bytes.Clone(body)
-	entries, err := parseTreeEntries(bodyCopy)
+	entries, err := decodeTreeEntries(bodyCopy)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"%w: %v",
+			"%w: decode entries: %w",
 			ErrInvalidTree,
 			err,
 		)
@@ -86,20 +82,19 @@ func ParseTree(body []byte) (*Tree, error) {
 func NewTreeFromEntries(entries []TreeEntry) (*Tree, error) {
 	entriesCopy := slices.Clone(entries)
 	if err := validateTreeEntries(entriesCopy); err != nil {
-		return nil, err
+		return nil, fmt.Errorf(
+			"%w: construct tree: %w",
+			ErrInvalidTree,
+			err,
+		)
 	}
 
-	SortTreeEntries(entriesCopy)
+	slices.SortFunc(entriesCopy, compareTreeEntries)
 
 	return &Tree{
-		body:    serializeTreeEntries(entriesCopy),
+		body:    encodeTreeEntries(entriesCopy),
 		entries: entriesCopy,
 	}, nil
-}
-
-// Body returns a defensive copy of the raw tree body.
-func (t *Tree) Body() []byte {
-	return bytes.Clone(t.body)
 }
 
 // Type returns ObjectTypeTree.
@@ -112,17 +107,17 @@ func (t *Tree) Size() int {
 	return len(t.body)
 }
 
+// Body returns a defensive copy of the raw tree body.
+func (t *Tree) Body() []byte {
+	return bytes.Clone(t.body)
+}
+
 // Entries returns a copy of the entries in canonical order.
 func (t *Tree) Entries() []TreeEntry {
 	return slices.Clone(t.entries)
 }
 
-// Serialize returns the tree in "<type> <size>\x00<body>" format.
-func (t *Tree) Serialize() []byte {
-	return serializeObject(ObjectTypeTree, t.body)
-}
-
-func serializeTreeEntries(entries []TreeEntry) []byte {
+func encodeTreeEntries(entries []TreeEntry) []byte {
 	var buffer bytes.Buffer
 	for _, entry := range entries {
 		buffer.WriteString(entry.mode.String())
@@ -134,7 +129,7 @@ func serializeTreeEntries(entries []TreeEntry) []byte {
 	return buffer.Bytes()
 }
 
-func parseTreeEntries(body []byte) ([]TreeEntry, error) {
+func decodeTreeEntries(body []byte) ([]TreeEntry, error) {
 	var entries []TreeEntry
 	seenNames := make(map[string]struct{})
 	previousSortKey := ""
@@ -161,7 +156,7 @@ func parseTreeEntries(body []byte) ([]TreeEntry, error) {
 			)
 		}
 
-		offset += modeEnd + 1
+		offset = modeEnd + 1
 		nameStart := offset
 		nulIndex := bytes.IndexByte(body[offset:], 0)
 		if nulIndex == -1 {
@@ -215,7 +210,7 @@ func parseTreeEntries(body []byte) ([]TreeEntry, error) {
 		seenNames[name] = struct{}{}
 
 		sortKey := treeEntrySortKey(entry.name, entry.mode.IsDirectory())
-		if hasPrevious && previousSortKey > sortKey {
+		if hasPrevious && strings.Compare(previousSortKey, sortKey) > 0 {
 			return nil, fmt.Errorf(
 				"entries are not in canonical order: %q before %q",
 				previousSortKey,
@@ -233,26 +228,16 @@ func parseTreeEntries(body []byte) ([]TreeEntry, error) {
 func validateTreeEntries(entries []TreeEntry) error {
 	seenNames := make(map[string]struct{}, len(entries))
 	for i, entry := range entries {
-		if !entry.mode.IsValid() {
+		if err := validateTreeEntry(entry); err != nil {
 			return fmt.Errorf(
-				"%w: entry %d has invalid mode %#o",
-				ErrInvalidTree,
-				i,
-				uint32(entry.mode),
-			)
-		}
-		if err := validateTreeEntryName(entry.name); err != nil {
-			return fmt.Errorf(
-				"%w: entry %d: %v",
-				ErrInvalidTree,
+				"entry %d: %w",
 				i,
 				err,
 			)
 		}
 		if _, exists := seenNames[entry.name]; exists {
 			return fmt.Errorf(
-				"%w: duplicate entry name %q",
-				ErrInvalidTree,
+				"duplicate entry name %q",
 				entry.name,
 			)
 		}
@@ -261,35 +246,42 @@ func validateTreeEntries(entries []TreeEntry) error {
 	return nil
 }
 
+func validateTreeEntry(entry TreeEntry) error {
+	if !entry.mode.IsValid() {
+		return fmt.Errorf(
+			"invalid mode %#o: %w",
+			uint32(entry.mode),
+			ErrInvalidFileMode,
+		)
+	}
+	if err := validateTreeEntryName(entry.name); err != nil {
+		return err
+	}
+	return nil
+}
+
 func validateTreeEntryName(name string) error {
 	switch {
 	case name == "":
-		return fmt.Errorf(
-			"%w: name is empty",
-			ErrInvalidTree,
-		)
+		return fmt.Errorf("name is empty")
 	case name == "." || name == "..":
 		return fmt.Errorf(
-			"%w: traversal component %q is not allowed",
-			ErrInvalidTree,
+			"traversal component %q is not allowed",
 			name,
 		)
 	case strings.ContainsRune(name, '/'):
 		return fmt.Errorf(
-			"%w: %q contains slash",
-			ErrInvalidTree,
+			"%q contains slash",
 			name,
 		)
 	case strings.ContainsRune(name, '\\'):
 		return fmt.Errorf(
-			"%w: %q contains backslash",
-			ErrInvalidTree,
+			"%q contains backslash",
 			name,
 		)
 	case strings.ContainsRune(name, 0):
 		return fmt.Errorf(
-			"%w: %q contains NUL",
-			ErrInvalidTree,
+			"%q contains NUL",
 			name,
 		)
 	default:
@@ -297,23 +289,16 @@ func validateTreeEntryName(name string) error {
 	}
 }
 
-func SortTreeEntries(entries []TreeEntry) {
-	slices.SortFunc(
-		entries, func(a, b TreeEntry) int {
-			return strings.Compare(
-				treeEntrySortKey(a.name, a.mode.IsDirectory()),
-				treeEntrySortKey(b.name, b.mode.IsDirectory()),
-			)
-		},
-	)
-
-}
-
-func SortTreeEntriesByName(entries []TreeEntry) {
-	slices.SortFunc(
-		entries, func(a, b TreeEntry) int {
-			return strings.Compare(a.name, b.name)
-		},
+func compareTreeEntries(a, b TreeEntry) int {
+	return strings.Compare(
+		treeEntrySortKey(
+			a.name,
+			a.mode.IsDirectory(),
+		),
+		treeEntrySortKey(
+			b.name,
+			b.mode.IsDirectory(),
+		),
 	)
 }
 

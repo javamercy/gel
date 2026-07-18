@@ -112,7 +112,7 @@ func (s *ShowService) Show(objectRef string, options ShowOptions) (*ShowResult, 
 			Blob: &ShowBlobResult{Hash: resolved.Hash, Body: obj.Body()},
 		}, nil
 	case *domain.Tree:
-		domain.SortTreeEntriesByName(obj.Entries())
+		//domain.SortTreeEntriesByName(obj.Entries())
 		return &ShowResult{
 			Mode: ShowModeTree,
 			Tree: &ShowTreeResult{Hash: resolved.Hash, TreeEntries: obj.Entries()},

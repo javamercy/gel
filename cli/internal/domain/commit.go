@@ -69,7 +69,8 @@ func (commit *Commit) Size() int {
 
 // Serialize returns the full object serialization in "<type> <size>\\x00<body>" format.
 func (commit *Commit) Serialize() []byte {
-	return serializeObject(ObjectTypeCommit, commit.body)
+	// TODO: fix
+	return nil
 }
 
 // NewCommit parses a raw commit body and returns a validated Commit.

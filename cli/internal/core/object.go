@@ -28,7 +28,7 @@ func (o *ObjectService) GetObjectSize(hash domain.Hash) (uint32, error) {
 		return 0, err
 	}
 
-	object, err := domain.DeserializeObject(data)
+	object, err := domain.DecodeObject(data)
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func (o *ObjectService) Read(hash domain.Hash) (domain.Object, error) {
 		return nil, err
 	}
 
-	object, err := domain.DeserializeObject(data)
+	object, err := domain.DecodeObject(data)
 	if err != nil {
 		return nil, err
 	}
@@ -113,11 +113,14 @@ func (o *ObjectService) ComputeObjectHash(path domain.AbsolutePath) (domain.Hash
 	}
 
 	blob := domain.NewBlob(data)
-	serializedData := blob.Serialize()
-	hexHash := ComputeSHA256(serializedData)
+	encodedData, err := domain.EncodeObject(blob)
+	if err != nil {
+		return domain.Hash{}, nil, fmt.Errorf("failed to encode object: %w", err)
+	}
+	hexHash := ComputeSHA256(encodedData)
 	hash, err := domain.NewHashFromHex(hexHash)
 	if err != nil {
 		return domain.Hash{}, nil, err
 	}
-	return hash, serializedData, nil
+	return hash, encodedData, nil
 }

@@ -75,15 +75,18 @@ func (w *WriteTreeService) writeTreeRecursive(root *directoryNode) (domain.Hash,
 		entries = append(entries, entry)
 	}
 
-	domain.SortTreeEntries(entries)
+	//domain.sortTreeEntries(entries)
 
 	tree, err := domain.NewTreeFromEntries(entries)
 	if err != nil {
 		return domain.Hash{}, err
 	}
 
-	data := tree.Serialize()
-	hexHash := core.ComputeSHA256(data)
+	encodedData, err := domain.EncodeObject(tree)
+	if err != nil {
+		return domain.Hash{}, err
+	}
+	hexHash := core.ComputeSHA256(encodedData)
 	hash, err := domain.NewHashFromHex(hexHash)
 	if err != nil {
 		return domain.Hash{}, err
@@ -97,7 +100,7 @@ func (w *WriteTreeService) writeTreeRecursive(root *directoryNode) (domain.Hash,
 		return hash, nil
 	}
 
-	err = w.objectService.Write(hash, data)
+	err = w.objectService.Write(hash, encodedData)
 	if err != nil {
 		return domain.Hash{}, err
 	}
