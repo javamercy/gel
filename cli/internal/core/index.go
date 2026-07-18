@@ -24,17 +24,17 @@ func NewIndexService(indexStorage *storage.IndexStorage) *IndexService {
 func (i *IndexService) Read() (*domain.Index, error) {
 	data, err := i.indexStorage.Read()
 	if errors.Is(err, os.ErrNotExist) {
-		return domain.NewEmptyIndex(), nil
+		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	return domain.DeserializeIndex(data)
+	return domain.DecodeIndex(data)
 }
 
 // Write serializes the given index and persists it to storage.
 func (i *IndexService) Write(index *domain.Index) error {
-	serializedData, err := index.Serialize()
+	serializedData, err := domain.EncodeIndex(index)
 	if err != nil {
 		return err
 	}
@@ -42,20 +42,23 @@ func (i *IndexService) Write(index *domain.Index) error {
 }
 
 // GetEntries returns the current index entries from storage.
-func (i *IndexService) GetEntries() ([]*domain.IndexEntry, error) {
+func (i *IndexService) GetEntries() ([]domain.IndexEntry, error) {
 	index, err := i.Read()
 	if err != nil {
 		return nil, err
 	}
-	return index.Entries, nil
+	return index.Entries(), nil
 }
 
 // WriteEntries replaces the current index entries and persists the updated index.
-func (i *IndexService) WriteEntries(entries []*domain.IndexEntry) error {
+func (i *IndexService) WriteEntries(entries []domain.IndexEntry) error {
 	index, err := i.Read()
 	if err != nil {
 		return err
 	}
-	index.ReplaceEntries(entries)
+	for _, entry := range entries {
+		// TODO: handle error
+		index.SetEntry(entry)
+	}
 	return i.Write(index)
 }

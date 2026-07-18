@@ -113,32 +113,33 @@ func (a *AddService) collectPaths(
 		var indexEntries []*domain.IndexEntry
 		switch resolved.Type {
 		case core.PathspecTypeFile, core.PathspecTypeNonExistent:
-			normalizedScope, err := domain.ParseNormalizedPath(resolved.NormalizedScope)
+			// TODO: fix this to find the entry in the index and add it to indexEntries
+			_, err := domain.ParseNormalizedPath(resolved.NormalizedScope)
 			if err != nil {
 				return nil, nil, fmt.Errorf("add: %w", err)
 			}
-			if entry, _ := index.FindEntry(normalizedScope); entry != nil {
-				indexEntries = []*domain.IndexEntry{entry}
+			/* if entry, _ := index.FindEntry(normalizedScope); entry != nil {
+				indexEntries = nil
 			} else {
 				prefix := resolved.NormalizedScope
 				if prefix != "" {
 					prefix += "/"
 				}
-				indexEntries = index.FindEntriesByPathPrefix(prefix)
-			}
+				//indexEntries = index.FindEntriesByPathPrefix(prefix)
+			}*/
 		case core.PathspecTypeDirectory:
 			prefix := resolved.NormalizedScope
 			if prefix != "" {
 				prefix += "/"
 			}
-			indexEntries = index.FindEntriesByPathPrefix(prefix)
+			//indexEntries = index.FindEntriesByPathPrefix(prefix)
 		case core.PathspecTypeGlobPattern:
-			indexEntries = index.FindEntriesByPathPattern(resolved.NormalizedScope)
+			//indexEntries = index.FindEntriesByPathPattern(resolved.NormalizedScope)
 		}
 
 		for _, entry := range indexEntries {
-			if !resolved.NormalizedPaths[entry.Path] {
-				pathsToRemoveSet[entry.Path] = struct{}{}
+			if !resolved.NormalizedPaths[entry.Path()] {
+				pathsToRemoveSet[entry.Path()] = struct{}{}
 			}
 		}
 		if len(resolved.NormalizedPaths) == 0 && len(indexEntries) == 0 {

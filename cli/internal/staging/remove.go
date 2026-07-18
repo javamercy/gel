@@ -114,16 +114,17 @@ func (r *RemoveService) collectPlan(
 	pruneRoots := make(map[domain.NormalizedPath]struct{})
 
 	for _, pathspec := range pathspecs {
-		normPath, err := r.normalizePathspec(pathspec)
+		_, err := r.normalizePathspec(pathspec)
 		if err != nil {
 			return removePlan{}, err
 		}
 
-		if entry, _ := index.FindEntry(normPath); entry != nil {
-			targets[entry.Path] = struct{}{}
+		/* if entry, _ := index.FindEntry(normPath); entry != nil {
+			targets[entry.Path()] = struct{}{}
 			continue
-		}
+		} */
 
+		normPath := domain.NormalizedPath{}
 		displayPath := removeDisplayPath(pathspec, normPath)
 		descendants := findDescendantEntries(index, normPath)
 		if len(descendants) == 0 {
@@ -135,7 +136,7 @@ func (r *RemoveService) collectPlan(
 
 		pruneRoots[normPath] = struct{}{}
 		for _, entry := range descendants {
-			targets[entry.Path] = struct{}{}
+			targets[entry.Path()] = struct{}{}
 		}
 	}
 
@@ -190,12 +191,9 @@ func (r *RemoveService) validateTargets(
 	cached bool,
 ) error {
 	for _, path := range paths {
-		entry, _ := index.FindEntry(path)
-		if entry == nil {
-			continue
-		}
-
-		staged := hasStagedChanges(path, entry.Hash, headPathHashes)
+		//entry, _ := index.FindEntry(path)
+		entry := domain.IndexEntry{}
+		staged := hasStagedChanges(path, entry.Hash(), headPathHashes)
 		local, err := r.hasLocalModifications(entry, !cached || staged)
 		if err != nil {
 			return err
@@ -214,7 +212,7 @@ func (r *RemoveService) validateTargets(
 }
 
 // hasLocalModifications reports whether the working tree file differs from its index entry.
-func (r *RemoveService) hasLocalModifications(entry *domain.IndexEntry, check bool) (bool, error) {
+func (r *RemoveService) hasLocalModifications(entry domain.IndexEntry, check bool) (bool, error) {
 	if !check {
 		return false, nil
 	}
@@ -356,12 +354,13 @@ func (r *RemoveService) restoreFileBackups(backups map[domain.NormalizedPath]fil
 }
 
 // findDescendantEntries returns tracked files beneath a directory-style pathspec.
-func findDescendantEntries(index *domain.Index, path domain.NormalizedPath) []*domain.IndexEntry {
+func findDescendantEntries(index *domain.Index, path domain.NormalizedPath) []domain.IndexEntry {
 	prefix := path.String()
 	if prefix != "" {
 		prefix += "/"
 	}
-	return index.FindEntriesByPathPrefix(prefix)
+	//return index.FindEntriesByPathPrefix(prefix)
+	return nil
 }
 
 // hasStagedChanges reports whether an index entry differs from the HEAD tree snapshot.
@@ -379,16 +378,16 @@ func cloneIndexWithoutTargets(
 	index *domain.Index,
 	targets map[domain.NormalizedPath]struct{},
 ) *domain.Index {
-	clonedIndex := index.Clone()
-
-	entries := make([]*domain.IndexEntry, 0, len(clonedIndex.Entries))
-	for _, entry := range clonedIndex.Entries {
-		if _, ok := targets[entry.Path]; ok {
+	//clonedIndex := index.Clone()
+	clonedIndex := &domain.Index{}
+	entries := make([]domain.IndexEntry, 0, len(clonedIndex.Entries()))
+	for _, entry := range clonedIndex.Entries() {
+		if _, ok := targets[entry.Path()]; ok {
 			entries = append(entries, entry)
 		}
 	}
 
-	clonedIndex.ReplaceEntries(entries)
+	//clonedIndex.ReplaceEntries(entries)
 	return clonedIndex
 }
 

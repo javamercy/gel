@@ -92,20 +92,17 @@ func (r *RestoreService) Restore(paths []domain.AbsolutePath, options RestoreOpt
 
 // restoreIndexVsWorkingTree updates working tree files from index blob snapshots.
 func (r *RestoreService) restoreIndexVsWorkingTree(paths []domain.AbsolutePath) error {
-	index, err := r.indexService.Read()
+	_, err := r.indexService.Read()
 	if err != nil {
 		return err
 	}
 	for _, path := range paths {
-		normalizedPath, err := path.ToNormalizedPath(r.workspace.RepoRoot())
+		_, err := path.ToNormalizedPath(r.workspace.RepoRoot())
 		if err != nil {
 			return err
 		}
 
-		entry, _ := index.FindEntry(normalizedPath)
-		if entry == nil {
-			continue
-		}
+		entry := domain.IndexEntry{}
 
 		changeResult, err := r.changeDetector.DetectFileChange(entry)
 		if err != nil {
@@ -115,7 +112,7 @@ func (r *RestoreService) restoreIndexVsWorkingTree(paths []domain.AbsolutePath) 
 			continue
 		}
 
-		blob, err := r.objectService.ReadBlob(entry.Hash)
+		blob, err := r.objectService.ReadBlob(entry.Hash())
 		if err != nil {
 			return err
 		}
@@ -211,19 +208,18 @@ func (r *RestoreService) restoreCommitVsIndex(commitHash domain.Hash, paths []do
 		}
 
 		inCommit := err == nil
-		indexEntry, _ := index.FindEntry(normalizedPath)
-		inIndex := indexEntry != nil
-
+		indexEntry := domain.IndexEntry{}
+		inIndex := err == nil
 		switch {
 		case !inCommit && !inIndex:
 			continue
-		case inCommit && inIndex && indexEntry.Hash == treeEntry.Hash():
+		case inCommit && inIndex && indexEntry.Hash() == treeEntry.Hash():
 			continue
 		case inCommit:
-			newIndexEntry := domain.NewEmptyIndexEntry(normalizedPath, treeEntry.Hash(), uint32(treeEntry.Mode()))
+			newIndexEntry := domain.IndexEntry{}
 			index.SetEntry(newIndexEntry)
 		default:
-			index.RemoveEntry(normalizedPath)
+			index.RemoveEntry(indexEntry)
 		}
 	}
 	return r.indexService.Write(index)

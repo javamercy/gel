@@ -4,7 +4,6 @@ import (
 	"Gel/internal/core"
 	"Gel/internal/domain"
 	"fmt"
-	"time"
 )
 
 // ReadTreeService replaces index contents from a tree object.
@@ -29,26 +28,14 @@ func NewReadTreeService(
 // Existing index entries are discarded. New entries are created with tree mode
 // and hash data; filesystem stat fields are set to zero values.
 func (r *ReadTreeService) ReadTree(hash domain.Hash) error {
-	var indexEntries []*domain.IndexEntry
+	var indexEntries []domain.IndexEntry
 	processor := func(entry domain.TreeEntry, path string) error {
-		normPath, err := domain.ParseNormalizedPath(path)
+		_, err := domain.ParseNormalizedPath(path)
 		if err != nil {
 			return err
 		}
-
-		indexEntry := domain.NewIndexEntry(
-			normPath,
-			entry.Hash(),
-			0,
-			uint32(entry.Mode()),
-			0,
-			0,
-			0,
-			0,
-			domain.ComputeIndexFlags(normPath.String(), 0),
-			time.Time{},
-			time.Time{},
-		)
+		// TODO: fix this to create a proper index entry with the correct path, hash, and mode
+		indexEntry := domain.IndexEntry{}
 		indexEntries = append(indexEntries, indexEntry)
 		return nil
 	}

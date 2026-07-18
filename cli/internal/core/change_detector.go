@@ -45,8 +45,8 @@ func NewChangeDetector(objectService *ObjectService, repoDir domain.AbsolutePath
 // It resolves the entry path, classifies missing files as FileStateDeleted,
 // returns FileStateUnchanged when stat metadata matches, and otherwise computes
 // a fresh blob hash and returns FileStateModified.
-func (c *ChangeDetector) DetectFileChange(entry *domain.IndexEntry) (ChangeResult, error) {
-	absPath, err := entry.Path.ToAbsolutePath(c.repoDir)
+func (c *ChangeDetector) DetectFileChange(entry domain.IndexEntry) (ChangeResult, error) {
+	absPath, err := entry.Path().ToAbsolutePath(c.repoDir)
 	if err != nil {
 		return ChangeResult{}, err
 	}

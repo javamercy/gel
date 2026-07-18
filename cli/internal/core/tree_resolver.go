@@ -96,7 +96,7 @@ func (t *TreeResolver) ResolveIndex() (PathHashes, error) {
 
 	pathHashes := make(PathHashes, len(entries))
 	for _, entry := range entries {
-		pathHashes[entry.Path] = entry.Hash
+		pathHashes[entry.Path()] = entry.Hash()
 	}
 	return pathHashes, nil
 }
@@ -104,18 +104,19 @@ func (t *TreeResolver) ResolveIndex() (PathHashes, error) {
 // ResolveWorkingTree returns repository-wide working tree path hashes.
 // The scan is rooted at repository root so results are independent of current working directory.
 func (t *TreeResolver) ResolveWorkingTree() (PathHashes, error) {
-	resolvedPaths, err := t.pathResolver.Resolve([]string{t.workspace.RepoRoot().String()})
+	// TODO: completely revise this part
+	_, err := t.pathResolver.Resolve([]string{t.workspace.RepoRoot().String()})
 	if err != nil {
 		return nil, err
 	}
 
-	index, err := t.indexService.Read()
+	_, err = t.indexService.Read()
 	if err != nil {
 		return nil, err
 	}
 
 	pathHashes := make(map[domain.NormalizedPath]domain.Hash)
-	for _, resolved := range resolvedPaths {
+	/* for _, resolved := range resolvedPaths {
 		for path := range resolved.NormalizedPaths {
 			entry, _ := index.FindEntry(path)
 			if entry != nil {
@@ -144,7 +145,7 @@ func (t *TreeResolver) ResolveWorkingTree() (PathHashes, error) {
 				pathHashes[path] = hash
 			}
 		}
-	}
+	} */
 	return pathHashes, nil
 }
 

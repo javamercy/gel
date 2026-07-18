@@ -105,7 +105,7 @@ func (w *WriteTreeService) writeTreeRecursive(root *directoryNode) (domain.Hash,
 }
 
 // buildRootTree groups flat index entries into an in-memory directory tree.
-func buildRootTree(entries []*domain.IndexEntry) *directoryNode {
+func buildRootTree(entries []domain.IndexEntry) *directoryNode {
 	root := &directoryNode{
 		name:     "",
 		children: make(map[string]*directoryNode),
@@ -114,18 +114,13 @@ func buildRootTree(entries []*domain.IndexEntry) *directoryNode {
 
 	for _, entry := range entries {
 		parentDir := root
-		names := strings.Split(entry.Path.String(), "/")
+		names := strings.Split(entry.Path().String(), "/")
 
 		for i, name := range names {
-			fileMode, err := domain.NewFileMode(entry.Mode)
-			if err != nil {
-				// TODO: fix here
-				continue
-			}
 			if i == len(names)-1 {
 				fileNode := &fileNode{
-					mode: fileMode,
-					hash: entry.Hash,
+					mode: entry.Mode(),
+					hash: entry.Hash(),
 					name: name,
 				}
 				parentDir.files = append(parentDir.files, fileNode)

@@ -59,15 +59,15 @@ func (l *LsFilesService) LsFiles(pathspec string, options LsFilesOptions) ([]str
 		return nil, fmt.Errorf("ls-files: %w", err)
 	}
 
-	var entries []*domain.IndexEntry
+	var entries []domain.IndexEntry
 	if pathspec != "" {
 		if strings.ContainsAny(pathspec, globPatterns) {
-			entries = index.FindEntriesByPathPattern(pathspec)
+			//entries = index.FindEntriesByPathPattern(pathspec)
 		} else {
-			entries = index.FindEntriesByPathPrefix(pathspec)
+			//entries = index.FindEntriesByPathPrefix(pathspec)
 		}
 	} else {
-		entries = index.Entries
+		entries = index.Entries()
 	}
 
 	switch {
@@ -84,36 +84,31 @@ func (l *LsFilesService) LsFiles(pathspec string, options LsFilesOptions) ([]str
 }
 
 // lsFilesWithStage formats entries as mode/hash/stage/path.
-func (l *LsFilesService) lsFilesWithStage(entries []*domain.IndexEntry) []string {
+func (l *LsFilesService) lsFilesWithStage(entries []domain.IndexEntry) []string {
 	files := make([]string, len(entries))
 	for i, entry := range entries {
-		fileMode, err := domain.NewFileMode(entry.Mode)
-		if err != nil {
-			// TODO: Skip entries with invalid mode, as they cannot be meaningfully represented in stage format.
-			continue
-		}
 		files[i] = fmt.Sprintf(
 			"%s %s %d\t%s",
-			fileMode,
-			entry.Hash,
-			entry.GetStage(),
-			entry.Path,
+			entry.Mode(),
+			entry.Hash(),
+			entry.Stage(),
+			entry.Path(),
 		)
 	}
 	return files
 }
 
 // lsFilesWithCached returns entry paths exactly as stored in index.
-func (l *LsFilesService) lsFilesWithCached(entries []*domain.IndexEntry) []string {
+func (l *LsFilesService) lsFilesWithCached(entries []domain.IndexEntry) []string {
 	files := make([]string, len(entries))
 	for i, entry := range entries {
-		files[i] = entry.Path.String()
+		files[i] = entry.Path().String()
 	}
 	return files
 }
 
 // lsFilesWithModified returns tracked paths classified as modified.
-func (l *LsFilesService) lsFilesWithModified(entries []*domain.IndexEntry) ([]string, error) {
+func (l *LsFilesService) lsFilesWithModified(entries []domain.IndexEntry) ([]string, error) {
 	files := make([]string, 0)
 	for _, entry := range entries {
 		changeResult, err := l.changeDetector.DetectFileChange(entry)
@@ -121,24 +116,24 @@ func (l *LsFilesService) lsFilesWithModified(entries []*domain.IndexEntry) ([]st
 			return nil, err
 		}
 		if changeResult.FileState == core.FileStateModified {
-			files = append(files, entry.Path.String())
+			files = append(files, entry.Path().String())
 		}
 	}
 	return files, nil
 }
 
 // lsFilesWithDeleted returns tracked paths that no longer exist on disk.
-func (l *LsFilesService) lsFilesWithDeleted(entries []*domain.IndexEntry) ([]string, error) {
+func (l *LsFilesService) lsFilesWithDeleted(entries []domain.IndexEntry) ([]string, error) {
 	files := make([]string, 0)
 	for _, entry := range entries {
-		absolutePath, err := entry.Path.ToAbsolutePath(l.workspace.RepoRoot())
+		absolutePath, err := entry.Path().ToAbsolutePath(l.workspace.RepoRoot())
 		if err != nil {
 			return nil, fmt.Errorf("ls-files: %w", err)
 		}
 		_, err = os.Stat(absolutePath.String())
 		switch {
 		case errors.Is(err, os.ErrNotExist):
-			files = append(files, entry.Path.String())
+			files = append(files, entry.Path().String())
 		case err != nil:
 			return nil, fmt.Errorf("ls-files: failed to stat file '%s': %w", entry.Path, err)
 		}

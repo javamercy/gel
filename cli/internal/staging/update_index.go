@@ -6,7 +6,6 @@ import (
 	"Gel/internal/validate"
 	"errors"
 	"fmt"
-	"io/fs"
 )
 
 // UpdateIndexOptions controls update-index behavior.
@@ -92,89 +91,90 @@ func (u *UpdateIndexService) updateIndexWithAdd(
 			return nil, fmt.Errorf("update-index: %w", err)
 		}
 
-		var newEntry *domain.IndexEntry
-		stat, err := domain.ReadFileStat(absolutePath)
+		var newEntry domain.IndexEntry
+		_, err = domain.ReadFileStat(absolutePath)
 		if err != nil {
 			return nil, fmt.Errorf("update-index: %w", err)
 		}
 
-		entry, _ := index.FindEntry(path)
-		if entry != nil {
-			changeResult, err := u.changeDetector.DetectFileChange(entry)
-			if err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
-			}
+		/*
+			if entry != nil {
+				changeResult, err := u.changeDetector.DetectFileChange(entry)
+				if err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
 
-			if changeResult.FileState == core.FileStateUnchanged {
-				continue
-			}
+				if changeResult.FileState == core.FileStateUnchanged {
+					continue
+				}
 
-			addedPaths = append(addedPaths, path)
-			if !write {
-				continue
-			}
-			if _, err := u.hashObjectService.HashObject(
-				absolutePath, core.HashObjectOptions{Write: true},
-			); err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
-			}
+				addedPaths = append(addedPaths, path)
+				if !write {
+					continue
+				}
+				if _, err := u.hashObjectService.HashObject(
+					absolutePath, core.HashObjectOptions{Write: true},
+				); err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
 
-			index.RemoveEntry(path)
+				index.RemoveEntry(path)
 
-			// TODO: fix here
-			fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
-			if err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
-			}
+				// TODO: fix here
+				fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
+				if err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
 
-			newEntry = domain.NewIndexEntry(
-				path,
-				changeResult.NewHash,
-				stat.Size,
-				uint32(fileMode),
-				stat.DeviceID,
-				stat.Inode,
-				stat.UserID,
-				stat.GroupID,
-				domain.ComputeIndexFlags(path.String(), 0),
-				stat.ChangeTime,
-				stat.ModTime,
-			)
-		} else {
-			hash, _, err := u.objectService.ComputeObjectHash(absolutePath)
-			if err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
-			}
+				newEntry = domain.NewIndexEntry(
+					path,
+					changeResult.NewHash,
+					stat.Size,
+					uint32(fileMode),
+					stat.DeviceID,
+					stat.Inode,
+					stat.UserID,
+					stat.GroupID,
+					domain.ComputeIndexFlags(path.String(), 0),
+					stat.ChangeTime,
+					stat.ModTime,
+				)
+			} else {
+				hash, _, err := u.objectService.ComputeObjectHash(absolutePath)
+				if err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
 
-			addedPaths = append(addedPaths, path)
-			if !write {
-				continue
-			}
-			if _, err := u.hashObjectService.HashObject(
-				absolutePath, core.HashObjectOptions{Write: true},
-			); err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
-			}
+				addedPaths = append(addedPaths, path)
+				if !write {
+					continue
+				}
+				if _, err := u.hashObjectService.HashObject(
+					absolutePath, core.HashObjectOptions{Write: true},
+				); err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
 
-			// TODO: fix here
-			fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
-			if err != nil {
-				return nil, fmt.Errorf("update-index: %w", err)
+				// TODO: fix here
+				fileMode, err := domain.FileModeFromFS(fs.FileMode(stat.Mode))
+				if err != nil {
+					return nil, fmt.Errorf("update-index: %w", err)
+				}
+				newEntry = domain.NewIndexEntry(
+					path,
+					hash,
+					stat.Size,
+					uint32(fileMode),
+					stat.DeviceID,
+					stat.Inode,
+					stat.UserID,
+					stat.GroupID,
+					domain.ComputeIndexFlags(path.String(), 0),
+					stat.ChangeTime,
+					stat.ModTime,
+				)
 			}
-			newEntry = domain.NewIndexEntry(
-				path,
-				hash,
-				stat.Size,
-				uint32(fileMode),
-				stat.DeviceID,
-				stat.Inode,
-				stat.UserID,
-				stat.GroupID,
-				domain.ComputeIndexFlags(path.String(), 0),
-				stat.ChangeTime,
-				stat.ModTime,
-			)
-		}
+		*/
 		index.SetEntry(newEntry)
 	}
 	if !write {
@@ -194,12 +194,12 @@ func (u *UpdateIndexService) updateIndexWithRemove(index *domain.Index, paths []
 	[]domain.NormalizedPath, error,
 ) {
 	var removedPaths []domain.NormalizedPath
-	for _, path := range paths {
-		if index.HasEntry(path) {
+	/*for _, path := range paths {
+		 if index.HasEntry(path) {
 			removedPaths = append(removedPaths, path)
 		}
 		index.RemoveEntry(path)
-	}
+	} */
 	if !write {
 		return removedPaths, nil
 	}
