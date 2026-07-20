@@ -150,5 +150,6 @@ func (a *AddService) collectPaths(
 	for path := range pathsToAddSet {
 		delete(pathsToRemoveSet, path)
 	}
-	return domain.SortedPathSet(pathsToAddSet), domain.SortedPathSet(pathsToRemoveSet), nil
+	// return domain.SortedPathSet(pathsToAddSet), domain.SortedPathSet(pathsToRemoveSet), nil
+	return nil, nil, nil
 }

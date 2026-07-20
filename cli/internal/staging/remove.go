@@ -141,9 +141,9 @@ func (r *RemoveService) collectPlan(
 	}
 
 	return removePlan{
-		paths:      domain.SortedPathSet(targets),
+		paths:      nil, // domain.SortedPathSet(targets),
 		targets:    targets,
-		pruneRoots: domain.SortedPathSet(pruneRoots),
+		pruneRoots: nil, // domain.SortedPathSet(pruneRoots),
 	}, nil
 }
 
@@ -336,8 +336,7 @@ func (r *RemoveService) restoreFileBackups(backups map[domain.NormalizedPath]fil
 	for path := range backups {
 		paths[path] = struct{}{}
 	}
-
-	for _, path := range domain.SortedPathSet(paths) {
+	for _, path := range make([]domain.NormalizedPath, 0) {
 		backup := backups[path]
 		absPath, err := path.ToAbsolutePath(r.workspace.RepoRoot())
 		if err != nil {

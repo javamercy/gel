@@ -18,7 +18,8 @@ func (p PathHashes) ExtractPaths() (paths []domain.NormalizedPath) {
 
 func (p PathHashes) ExtractPathsSorted() (paths []domain.NormalizedPath) {
 	paths = p.ExtractPaths()
-	domain.SortPaths(paths)
+	// BUG: fix
+	// domain.SortPaths(paths)
 	return
 }
 
