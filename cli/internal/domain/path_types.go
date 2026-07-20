@@ -149,6 +149,11 @@ func NewAbsolutePath(path string) (AbsolutePath, error) {
 	return AbsolutePath{value: cleaned}, nil
 }
 
+// IsZero reports whether p is the zero value.
+func (p AbsolutePath) IsZero() bool {
+	return p.value == ""
+}
+
 // String returns the native filesystem representation of p.
 func (p AbsolutePath) String() string {
 	return p.value

@@ -45,7 +45,7 @@ type Workspace struct {
 // It derives paths only and does not verify that the repository or its
 // metadata files exist.
 func NewWorkspace(repoRoot AbsolutePath) (*Workspace, error) {
-	if repoRoot.value == "" {
+	if repoRoot.IsZero() {
 		return nil, fmt.Errorf(
 			"%w: repository root is the zero value",
 			ErrInvalidAbsolutePath,
@@ -58,7 +58,6 @@ func NewWorkspace(repoRoot AbsolutePath) (*Workspace, error) {
 			value: filepath.Join(parts...),
 		}
 	}
-
 	return &Workspace{
 		repoRoot:   repoRoot,
 		gelDir:     joinWithRepoRoot(GelDirName),
