@@ -58,7 +58,7 @@ func (c *CommitService) Commit(message string) error {
 		if err != nil {
 			return fmt.Errorf("commit: failed to read parent commit '%s': %w", parentHash, err)
 		}
-		if parentCommit.TreeHash == treeHash {
+		if parentCommit.TreeHash() == treeHash {
 			return ErrNothingToCommit
 		}
 	}

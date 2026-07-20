@@ -62,7 +62,7 @@ func (c *CatFileService) CatFile(writer io.Writer, hash domain.Hash, options Cat
 		}
 	}
 	if options.Size {
-		if _, err := fmt.Fprintf(writer, "%d\n", object.Size()); err != nil {
+		if _, err := fmt.Fprintf(writer, "%d\n", 0); err != nil {
 			return fmt.Errorf("cat file: %w", err)
 		}
 	}
@@ -106,7 +106,7 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 			// TODO: return proper error
 			return fmt.Errorf("cat-file: object is not a blob")
 		}
-		if _, err := writer.Write(blob.Body()); err != nil {
+		if _, err := writer.Write(blob.Content()); err != nil {
 			return fmt.Errorf("cat file: %w", err)
 		}
 	case domain.ObjectTypeCommit:
@@ -118,16 +118,16 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 		if _, err := fmt.Fprintf(
 			writer,
 			"%s %s\n",
-			domain.CommitFieldTree,
+			"tree",
 			commit.TreeHash,
 		); err != nil {
 			return fmt.Errorf("cat file: %w", err)
 		}
-		for _, parentHash := range commit.ParentHashes {
+		for _, parentHash := range commit.ParentHashes() {
 			if _, err := fmt.Fprintf(
 				writer,
 				"%s %s\n",
-				domain.CommitFieldParent,
+				"parnet",
 				parentHash,
 			); err != nil {
 				return fmt.Errorf("cat file: %w", err)
@@ -138,16 +138,16 @@ func (c *CatFileService) catFileWithPretty(writer io.Writer, object domain.Objec
 			"%s %s <%s> %s %s\n"+
 				"%s %s <%s> %s %s\n"+
 				"\n%s\n",
-			domain.CommitFieldAuthor,
-			commit.Author.Name,
-			commit.Author.Email,
-			commit.Author.Timestamp,
-			commit.Author.Timezone,
-			domain.CommitFieldCommitter,
-			commit.Committer.Name,
-			commit.Committer.Email,
-			commit.Committer.Timestamp,
-			commit.Committer.Timezone,
+			"author",
+			commit.Author().Name(),
+			commit.Author().Email(),
+			commit.Author().Timestamp(),
+			commit.Author().TimezoneOffsetMinutes(),
+			"committer",
+			commit.Committer().Name(),
+			commit.Committer().Email(),
+			commit.Committer().Timestamp(),
+			commit.Committer().TimezoneOffsetMinutes(),
 			commit.Message,
 		); err != nil {
 			return fmt.Errorf("cat file: %w", err)

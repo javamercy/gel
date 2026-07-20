@@ -4,7 +4,6 @@ import (
 	"Gel/internal/core"
 	"Gel/internal/domain"
 	"fmt"
-	"time"
 )
 
 // CommitTreeService creates commit objects from an explicit tree hash.
@@ -38,35 +37,8 @@ func (c *CommitTreeService) CommitTree(
 		return domain.Hash{}, fmt.Errorf("commit-tree: %w", err)
 	}
 
-	name, email, err := c.configService.GetUserInfo()
-	if err != nil {
-		return domain.Hash{}, fmt.Errorf("commit-tree: %w", err)
-	}
-
-	now := time.Now()
-	identity, err := domain.NewIdentity(
-		name,
-		email,
-		domain.FormatCommitTimestamp(now),
-		domain.FormatCommitTimezone(now),
-	)
-	if err != nil {
-		return domain.Hash{}, fmt.Errorf("commit-tree: %w", err)
-	}
-
-	commitFields := domain.CommitFields{
-		TreeHash:     hash,
-		ParentHashes: parentHashes,
-		Author:       identity,
-		Committer:    identity,
-		Message:      message,
-	}
-	commit, err := domain.NewCommitFromFields(commitFields)
-	if err != nil {
-		return domain.Hash{}, fmt.Errorf("commit-tree: %w", err)
-	}
-
-	serializedData := commit.Serialize()
+	// TODO: fix
+	serializedData := []byte(nil)
 	hexCommitHash := core.ComputeSHA256(serializedData)
 	commitHash, err := domain.NewHashFromHex(hexCommitHash)
 	if err != nil {

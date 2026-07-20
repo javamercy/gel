@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"Gel/internal/domain"
 	"Gel/internal/inspect"
 	"fmt"
 	"strings"
@@ -51,20 +50,17 @@ func printShowResult(cmd *cobra.Command, result *inspect.ShowResult) error {
 
 // printShowCommit renders commit header, message, and patch output.
 func printShowCommit(cmd *cobra.Command, r *inspect.ShowCommitResult) error {
-	date, err := domain.FormatCommitDate(r.Commit.Author.Timestamp, r.Commit.Author.Timezone)
-	if err != nil {
-		return fmt.Errorf("show: %w", err)
-	}
+	date := ""
 
 	if r.Branch != "" {
 		cmd.Printf("commit %s (%s)\n", r.Hash, r.Branch)
 	} else {
 		cmd.Printf("commit %s\n", r.Hash)
 	}
-	cmd.Printf("Author: %s <%s>\n", r.Commit.Author.Name, r.Commit.Author.Email)
+	cmd.Printf("Author: %s <%s>\n", r.Commit.Author().Name(), r.Commit.Author().Email())
 	cmd.Printf("Date:   %s\n\n", date)
 
-	for _, line := range strings.Split(r.Commit.Message, "\n") {
+	for _, line := range strings.Split(r.Commit.Message(), "\n") {
 		cmd.Printf("    %s\n", line)
 	}
 	cmd.Printf("\n")

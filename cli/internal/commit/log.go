@@ -64,7 +64,7 @@ func (l *LogService) Log(name string, options LogOptions) ([]*LogEntry, error) {
 			return nil, fmt.Errorf("log: %w", err)
 		}
 		if options.Oneline {
-			firstLine := strings.Split(commit.Message, "\n")[0]
+			firstLine := strings.Split(commit.Message(), "\n")[0]
 			entries = append(
 				entries, &LogEntry{
 					Hash:    hash,
@@ -72,24 +72,20 @@ func (l *LogService) Log(name string, options LogOptions) ([]*LogEntry, error) {
 				},
 			)
 		} else {
-			date, err := domain.FormatCommitDate(commit.Author.Timestamp, commit.Author.Timezone)
-			if err != nil {
-				return nil, fmt.Errorf("log: %w", err)
-			}
 			entries = append(
 				entries, &LogEntry{
 					Hash:    hash,
-					Message: commit.Message,
-					Date:    date,
+					Message: commit.Message(),
+					Date:    "",
 				},
 			)
 
 		}
-		if len(commit.ParentHashes) == 0 {
+		if len(commit.ParentHashes()) == 0 {
 			break
 		}
 		// TODO: use a priority queue/heap to interleave commits from all parents by date
-		hash = commit.ParentHashes[0]
+		hash = commit.ParentHashes()[0]
 	}
 	return entries, nil
 }

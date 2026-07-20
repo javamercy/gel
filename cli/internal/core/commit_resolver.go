@@ -111,10 +111,10 @@ func (r *CommitResolver) walkNParents(hash domain.Hash, steps int) (domain.Hash,
 		if err != nil {
 			return domain.Hash{}, err
 		}
-		if len(commit.ParentHashes) == 0 {
+		if len(commit.ParentHashes()) == 0 {
 			return domain.Hash{}, errors.New("commit has no parents")
 		}
-		curr = commit.ParentHashes[0]
+		curr = commit.ParentHashes()[0]
 	}
 	return curr, nil
 }

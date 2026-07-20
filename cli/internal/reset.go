@@ -82,7 +82,7 @@ func (r *ResetService) Reset(target string, options ResetOptions) (*ResetResult,
 		return nil, fmt.Errorf("reset: %w", err)
 	}
 	if options.Mode == ResetModeMixed || options.Mode == ResetModeHard {
-		if err := r.readTreeService.ReadTree(targetCommit.TreeHash); err != nil {
+		if err := r.readTreeService.ReadTree(targetCommit.TreeHash()); err != nil {
 			return nil, fmt.Errorf("reset: %w", err)
 		}
 	}
@@ -154,7 +154,7 @@ func (r *ResetService) checkoutWorkingTree(targetHash domain.Hash) error {
 		if err := os.MkdirAll(filepath.Dir(absPath.String()), domain.DefaultDirPermission); err != nil {
 			return fmt.Errorf("failed to create parent dir for '%s': %w", absPath.String(), err)
 		}
-		if err := os.WriteFile(absPath.String(), blob.Body(), domain.DefaultFilePermission); err != nil {
+		if err := os.WriteFile(absPath.String(), blob.Content(), domain.DefaultFilePermission); err != nil {
 			return fmt.Errorf("failed to write '%s': %w", absPath, err)
 		}
 	}

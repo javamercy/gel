@@ -121,7 +121,7 @@ func (r *RestoreService) restoreIndexVsWorkingTree(paths []domain.AbsolutePath) 
 		if err := os.MkdirAll(dir, domain.DefaultDirPermission); err != nil {
 			return err
 		}
-		if err := os.WriteFile(path.String(), blob.Body(), domain.DefaultFilePermission); err != nil {
+		if err := os.WriteFile(path.String(), blob.Content(), domain.DefaultFilePermission); err != nil {
 			return err
 		}
 	}
@@ -176,7 +176,7 @@ func (r *RestoreService) restoreCommitVsWorkingTree(commitHash domain.Hash, path
 			if err := os.MkdirAll(dir, domain.DefaultDirPermission); err != nil {
 				return err
 			}
-			if err := os.WriteFile(path.String(), blob.Body(), domain.DefaultFilePermission); err != nil {
+			if err := os.WriteFile(path.String(), blob.Content(), domain.DefaultFilePermission); err != nil {
 				return err
 			}
 		}
@@ -202,7 +202,7 @@ func (r *RestoreService) restoreCommitVsIndex(commitHash domain.Hash, paths []do
 			return err
 		}
 
-		treeEntry, err := r.treeResolver.LookupPathInTree(commit.TreeHash, normalizedPath)
+		treeEntry, err := r.treeResolver.LookupPathInTree(commit.TreeHash(), normalizedPath)
 		if err != nil && !errors.Is(err, core.ErrPathNotFoundInTree) {
 			return err
 		}

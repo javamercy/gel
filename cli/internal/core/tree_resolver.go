@@ -75,7 +75,7 @@ func (t *TreeResolver) ResolveCommit(hash domain.Hash) (PathHashes, error) {
 	pathHashes := make(map[domain.NormalizedPath]domain.Hash)
 	walker := NewTreeWalker(t.objectService, WalkOptions{Recursive: true})
 	err = walker.Walk(
-		commit.TreeHash, "", func(e domain.TreeEntry, relPath string) error {
+		commit.TreeHash(), "", func(e domain.TreeEntry, relPath string) error {
 			normalizedPath, err := domain.ParseNormalizedPath(relPath)
 			if err != nil {
 				return err

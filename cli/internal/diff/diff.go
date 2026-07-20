@@ -242,7 +242,7 @@ func (d *DiffService) LoadBlobContent(_ domain.NormalizedPath, hash domain.Hash)
 	if err != nil {
 		return "", err
 	}
-	return string(blob.Body()), nil
+	return string(blob.Content()), nil
 }
 
 // LoadFileContent loads file text from the working tree using repository-root resolution.

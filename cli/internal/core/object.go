@@ -18,21 +18,24 @@ func NewObjectService(objectStorage *storage.ObjectStorage) *ObjectService {
 }
 
 func (o *ObjectService) GetObjectSize(hash domain.Hash) (uint32, error) {
-	compressedData, err := o.objectStorage.Read(hash)
-	if err != nil {
-		return 0, err
-	}
+	/*
+		compressedData, err := o.objectStorage.Read(hash)
+		if err != nil {
+			return 0, err
+		}
 
-	data, err := Decompress(compressedData)
-	if err != nil {
-		return 0, err
-	}
+		data, err := Decompress(compressedData)
+		if err != nil {
+			return 0, err
+		}
 
-	object, err := domain.DecodeObject(data)
-	if err != nil {
-		return 0, err
-	}
-	return uint32(object.Size()), nil
+		object, err := domain.DecodeObject(data)
+		if err != nil {
+			return 0, err
+		}
+		return uint32(object.Size()), nil
+	*/
+	return 0, nil
 }
 
 func (o *ObjectService) Write(hash domain.Hash, data []byte) error {

@@ -109,7 +109,7 @@ func (s *ShowService) Show(objectRef string, options ShowOptions) (*ShowResult, 
 	case *domain.Blob:
 		return &ShowResult{
 			Mode: ShowModeBlob,
-			Blob: &ShowBlobResult{Hash: resolved.Hash, Body: obj.Body()},
+			Blob: &ShowBlobResult{Hash: resolved.Hash, Body: obj.Content()},
 		}, nil
 	case *domain.Tree:
 		//domain.SortTreeEntriesByName(obj.Entries())
@@ -181,8 +181,8 @@ func (s *ShowService) buildShowCommitResult(resolved resolvedObjectRef, commit *
 	*ShowCommitResult, error,
 ) {
 	var parentHash domain.Hash
-	if len(commit.ParentHashes) > 0 {
-		parentHash = commit.ParentHashes[0]
+	if len(commit.ParentHashes()) > 0 {
+		parentHash = commit.ParentHashes()[0]
 	}
 
 	diffResults, err := s.diffService.Diff(

@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"unicode/utf8"
 )
 
 // ErrInvalidTree indicates malformed, inconsistent, or non-canonical tree data.
 var ErrInvalidTree = errors.New("invalid tree")
 
 // TreeEntry represents a single entry within a tree object.
-// Each entry corresponds to a file or subdirectory.
 type TreeEntry struct {
 	mode FileMode
 	hash Hash
@@ -20,7 +20,11 @@ type TreeEntry struct {
 }
 
 // NewTreeEntry validates and constructs a tree entry.
-func NewTreeEntry(mode FileMode, hash Hash, name string) (TreeEntry, error) {
+func NewTreeEntry(
+	mode FileMode,
+	hash Hash,
+	name string,
+) (TreeEntry, error) {
 	entry := TreeEntry{
 		mode: mode,
 		hash: hash,
@@ -51,34 +55,16 @@ func (e TreeEntry) Name() string {
 	return e.name
 }
 
-// Tree represents a directory structure stored in the object database.
+// Tree represents an immutable directory structure.
+//
+// The zero value is a valid empty tree.
 type Tree struct {
-	body    []byte
 	entries []TreeEntry
 }
 
-// DecodeTree decodes and validates a serialized tree body.
+// NewTreeFromEntries validates entries and constructs a canonical tree.
 //
-// The input is defensively copied. Encoded entries must already be in canonical order.
-func DecodeTree(body []byte) (*Tree, error) {
-	bodyCopy := bytes.Clone(body)
-	entries, err := decodeTreeEntries(bodyCopy)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"%w: decode entries: %w",
-			ErrInvalidTree,
-			err,
-		)
-	}
-	return &Tree{
-		body:    bodyCopy,
-		entries: entries,
-	}, nil
-}
-
-// NewTreeFromEntries validates entries and constructs a tree.
-//
-// Entries may be provided in any order. The resulting tree body uses canonical tree-entry ordering.
+// The provided slice is copied. Entries may be provided in any order.
 func NewTreeFromEntries(entries []TreeEntry) (*Tree, error) {
 	entriesCopy := slices.Clone(entries)
 	if err := validateTreeEntries(entriesCopy); err != nil {
@@ -92,7 +78,6 @@ func NewTreeFromEntries(entries []TreeEntry) (*Tree, error) {
 	slices.SortFunc(entriesCopy, compareTreeEntries)
 
 	return &Tree{
-		body:    encodeTreeEntries(entriesCopy),
 		entries: entriesCopy,
 	}, nil
 }
@@ -102,31 +87,62 @@ func (t *Tree) Type() ObjectType {
 	return ObjectTypeTree
 }
 
-// Size returns the byte length of the serialized tree body.
-func (t *Tree) Size() int {
-	return len(t.body)
-}
-
-// Body returns a defensive copy of the raw tree body.
-func (t *Tree) Body() []byte {
-	return bytes.Clone(t.body)
-}
+func (t *Tree) isObject() {}
 
 // Entries returns a copy of the entries in canonical order.
 func (t *Tree) Entries() []TreeEntry {
 	return slices.Clone(t.entries)
 }
 
-func encodeTreeEntries(entries []TreeEntry) []byte {
-	var buffer bytes.Buffer
-	for _, entry := range entries {
-		buffer.WriteString(entry.mode.String())
-		buffer.WriteByte(' ')
-		buffer.WriteString(entry.name)
-		buffer.WriteByte(0)
-		buffer.Write(entry.hash[:])
+// EncodeTree encodes tree using the canonical Gel tree-body format.
+func EncodeTree(tree *Tree) ([]byte, error) {
+	if tree == nil {
+		return nil, fmt.Errorf(
+			"%w: tree is nil",
+			ErrInvalidTree,
+		)
 	}
-	return buffer.Bytes()
+	if err := validateTreeEntries(tree.entries); err != nil {
+		return nil, fmt.Errorf(
+			"%w: validate entries: %w",
+			ErrInvalidTree,
+			err,
+		)
+	}
+	return encodeTreeEntries(tree.entries), nil
+}
+
+// DecodeTree decodes and validates a canonical Gel tree body.
+//
+// Encoded entries must already be in canonical order.
+func DecodeTree(data []byte) (*Tree, error) {
+	entries, err := decodeTreeEntries(data)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"%w: decode entries: %w",
+			ErrInvalidTree,
+			err,
+		)
+	}
+	return &Tree{
+		entries: entries,
+	}, nil
+}
+
+func encodeTreeEntries(entries []TreeEntry) []byte {
+	encoded := make([]byte, 0)
+	for _, entry := range entries {
+		encoded = append(
+			encoded,
+			[]byte(fmt.Sprintf(
+				"%s %s\x00%s",
+				entry.mode.String(),
+				entry.name,
+				entry.hash.String(),
+			))...,
+		)
+	}
+	return encoded
 }
 
 func decodeTreeEntries(body []byte) ([]TreeEntry, error) {
@@ -192,8 +208,12 @@ func decodeTreeEntries(body []byte) ([]TreeEntry, error) {
 
 		offset += HashByteLength
 
-		entry, err := NewTreeEntry(mode, hash, name)
-		if err != nil {
+		entry := TreeEntry{
+			mode: mode,
+			hash: hash,
+			name: name,
+		}
+		if err := validateTreeEntry(entry); err != nil {
 			return nil, fmt.Errorf(
 				"entry at offset %d: %w",
 				entryOffset,
@@ -241,7 +261,18 @@ func validateTreeEntries(entries []TreeEntry) error {
 				entry.name,
 			)
 		}
+
 		seenNames[entry.name] = struct{}{}
+
+		prev := entries[i-1]
+		curr := entries[i]
+		if compareTreeEntries(prev, curr) > 0 {
+			return fmt.Errorf(
+				"entry %q appears before earlier entry %q",
+				prev.name,
+				curr.name,
+			)
+		}
 	}
 	return nil
 }
@@ -252,6 +283,11 @@ func validateTreeEntry(entry TreeEntry) error {
 			"invalid mode %#o: %w",
 			uint32(entry.mode),
 			ErrInvalidFileMode,
+		)
+	}
+	if entry.hash.IsZero() {
+		return fmt.Errorf(
+			"entry hash cannot be zero",
 		)
 	}
 	if err := validateTreeEntryName(entry.name); err != nil {
@@ -267,6 +303,11 @@ func validateTreeEntryName(name string) error {
 	case name == "." || name == "..":
 		return fmt.Errorf(
 			"traversal component %q is not allowed",
+			name,
+		)
+	case !utf8.ValidString(name):
+		return fmt.Errorf(
+			"name %q is not valid UTF-8",
 			name,
 		)
 	case strings.ContainsRune(name, '/'):

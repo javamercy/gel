@@ -99,7 +99,7 @@ func (s *SwitchService) Switch(branch string, options SwitchOptions) (*SwitchRes
 	if err != nil {
 		return nil, fmt.Errorf("switch: %w", err)
 	}
-	if err := s.readTreeService.ReadTree(targetCommit.TreeHash); err != nil {
+	if err := s.readTreeService.ReadTree(targetCommit.TreeHash()); err != nil {
 		return nil, fmt.Errorf("switch: %w", err)
 	}
 	if err := s.refService.WriteSymbolic(domain.HeadFileName, targetRef); err != nil {
@@ -204,7 +204,7 @@ func (s *SwitchService) checkoutWorkingTree(oldCommitHash, targetCommitHash doma
 		if err := os.MkdirAll(filepath.Dir(absPath.String()), domain.DefaultDirPermission); err != nil {
 			return err
 		}
-		if err := os.WriteFile(absPath.String(), blob.Body(), domain.DefaultFilePermission); err != nil {
+		if err := os.WriteFile(absPath.String(), blob.Content(), domain.DefaultFilePermission); err != nil {
 			return err
 		}
 	}

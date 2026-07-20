@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// ErrInvalidObject indicates malformed or inconsistent serialized object data.
+// ErrInvalidObject indicates malformed or inconsistent encoded object data.
 var ErrInvalidObject = errors.New("invalid gel object")
 
 // Object represents an object stored in the Gel object database.
@@ -15,14 +15,10 @@ type Object interface {
 	// Type returns the object's type.
 	Type() ObjectType
 
-	// Size returns the byte length of the serialized body.
-	Size() int
-
-	// Body returns a defensive copy of the serialized body.
-	Body() []byte
+	isObject()
 }
 
-// EncodeObject encodes an object in "<type> <size>\x00<body>" format.
+// EncodeObject encodes object in "<type> <size>\x00<body>" format.
 func EncodeObject(object Object) ([]byte, error) {
 	if object == nil {
 		return nil, fmt.Errorf(
@@ -31,34 +27,16 @@ func EncodeObject(object Object) ([]byte, error) {
 		)
 	}
 
-	objectType := object.Type()
-	if !objectType.IsValid() {
+	encodedBody, err := encodeObjectBody(object)
+	if err != nil {
 		return nil, fmt.Errorf(
-			"%w: unsupported object type %q",
+			"%w: encode %s body: %w",
 			ErrInvalidObject,
-			objectType,
+			object.Type(),
+			err,
 		)
 	}
-
-	body := object.Body()
-	if object.Size() != len(body) {
-		return nil, fmt.Errorf(
-			"%w: body size mismatch: reported=%d actual=%d",
-			ErrInvalidObject,
-			object.Size(),
-			len(body),
-		)
-	}
-
-	sizeText := strconv.Itoa(len(body))
-	encoded := make([]byte, 0, len(objectType.String())+1+len(sizeText)+1+len(body))
-
-	encoded = append(encoded, objectType.String()...)
-	encoded = append(encoded, ' ')
-	encoded = append(encoded, sizeText...)
-	encoded = append(encoded, 0)
-	encoded = append(encoded, body...)
-	return encoded, nil
+	return encodeObject(object.Type(), encodedBody), nil
 }
 
 // DecodeObject decodes data in "<type> <size>\x00<body>" format.
@@ -107,7 +85,7 @@ func DecodeObject(data []byte) (Object, error) {
 		}
 		return tree, nil
 	case ObjectTypeCommit:
-		commit, err := NewCommit(body)
+		commit, err := DecodeCommit(body)
 		if err != nil {
 			return nil, fmt.Errorf(
 				"%w: decode commit body: %w",
@@ -121,6 +99,34 @@ func DecodeObject(data []byte) (Object, error) {
 			"%w: unsupported object type %q",
 			ErrInvalidObject,
 			objectType,
+		)
+	}
+}
+
+func encodeObject(objectType ObjectType, body []byte) []byte {
+	sizeText := strconv.Itoa(len(body))
+	encoded := make([]byte, 0, len(objectType.String())+1+len(sizeText)+1+len(body))
+
+	encoded = append(encoded, objectType.String()...)
+	encoded = append(encoded, ' ')
+	encoded = append(encoded, sizeText...)
+	encoded = append(encoded, 0)
+	encoded = append(encoded, body...)
+	return encoded
+}
+
+func encodeObjectBody(object Object) ([]byte, error) {
+	switch object := object.(type) {
+	case *Blob:
+		return object.Content(), nil
+	case *Tree:
+		return EncodeTree(object)
+	case *Commit:
+		return EncodeCommit(object)
+	default:
+		return nil, fmt.Errorf(
+			"unsupported object implementation %T",
+			object,
 		)
 	}
 }
