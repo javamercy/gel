@@ -6,8 +6,6 @@ import (
 	"Gel/internal/validate"
 	"bytes"
 	"fmt"
-	"slices"
-	"strings"
 
 	"github.com/BurntSushi/toml"
 )
@@ -87,7 +85,7 @@ func (c *ConfigService) Get(section, key string) (string, error) {
 // List returns all config entries in "section.key=value" format.
 // Results are sorted by section then key for deterministic ordering.
 func (c *ConfigService) List() ([]string, error) {
-	config, err := c.Read()
+	/*config, err := c.Read()
 	if err != nil {
 		return nil, err
 	}
@@ -95,25 +93,25 @@ func (c *ConfigService) List() ([]string, error) {
 	entries := config.Entries()
 	slices.SortFunc(
 		entries, func(a, b domain.ConfigEntry) int {
-			if a.Section != b.Section {
-				return strings.Compare(a.Section, b.Section)
+			if a.section != b.section {
+				return strings.Compare(a.section, b.section)
 			}
-			return strings.Compare(a.Key, b.Key)
+			return strings.Compare(a.key, b.key)
 		},
 	)
 
 	out := make([]string, 0, len(entries))
 	for _, entry := range entries {
-		out = append(out, fmt.Sprintf("%s.%s=%s", entry.Section, entry.Key, entry.Value))
-	}
-	return out, nil
+		out = append(out, fmt.Sprintf("%s.%s=%s", entry.section, entry.key, entry.value))
+	}*/
+	return nil, nil
 }
 
 // Write encodes and persists config data to storage.
 func (c *ConfigService) Write(config *domain.Config) error {
 	var buffer bytes.Buffer
 	encoder := toml.NewEncoder(&buffer)
-	if err := encoder.Encode(config.Sections()); err != nil {
+	if err := encoder.Encode(nil); err != nil {
 		return fmt.Errorf("config: failed to encode config: %w", err)
 	}
 	if err := c.configStorage.Write(buffer.Bytes()); err != nil {
