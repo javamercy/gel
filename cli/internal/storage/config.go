@@ -2,39 +2,87 @@ package storage
 
 import (
 	"Gel/internal/domain"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
-	"path/filepath"
+
+	"github.com/BurntSushi/toml"
 )
 
-type ConfigStorage struct {
-	workspace *domain.Workspace
+const configFilePermission fs.FileMode = 0o644
+
+// ConfigStore persists the repository configuration.
+type ConfigStore struct {
+	configPath domain.AbsolutePath
 }
 
-// NewConfigStorage creates storage access for .gel/config.toml.
-func NewConfigStorage(workspace *domain.Workspace) *ConfigStorage {
-	return &ConfigStorage{
-		workspace: workspace,
+// NewConfigStore creates a store for the config file at configPath.
+func NewConfigStore(configPath domain.AbsolutePath) *ConfigStore {
+	return &ConfigStore{
+		configPath: configPath,
 	}
 }
 
-// Read returns raw config bytes from disk.
-func (c *ConfigStorage) Read() ([]byte, error) {
-	data, err := os.ReadFile(c.workspace.ConfigPath().String())
+// Load reads and decodes the configuration file.
+func (s *ConfigStore) Load() (*domain.Config, error) {
+	file, err := os.Open(s.configPath.String())
 	if err != nil {
-		return nil, fmt.Errorf("config: error reading config file: %w", err)
+		return nil, fmt.Errorf(
+			"open config %q: %w",
+			s.configPath,
+			err,
+		)
 	}
-	return data, nil
+
+	defer func() {
+		_ = file.Close()
+	}()
+
+	sections := make(map[string]domain.ConfigSection)
+	if _, err := toml.NewDecoder(file).Decode(&sections); err != nil {
+		return nil, fmt.Errorf(
+			"decode config %q: %w",
+			s.configPath,
+			err,
+		)
+	}
+
+	config, err := domain.NewConfigFromSections(sections)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"validate config %q: %w",
+			s.configPath,
+			err,
+		)
+	}
+	return config, nil
 }
 
-// Write persists raw config bytes to disk, creating parent directories if needed.
-func (c *ConfigStorage) Write(data []byte) error {
-	dir := filepath.Dir(c.workspace.ConfigPath().String())
-	if err := os.MkdirAll(dir, domain.DefaultDirPermission); err != nil {
-		return fmt.Errorf("config: failed to create directory '%s': %w", dir, err)
+// Save encodes and atomically replaces the configuration file.
+func (s *ConfigStore) Save(config *domain.Config) error {
+	if config == nil {
+		return errors.New("config is nil")
 	}
-	if err := os.WriteFile(c.workspace.ConfigPath().String(), data, domain.DefaultFilePermission); err != nil {
-		return fmt.Errorf("config: error writing config file: %w", err)
+
+	encoded, err := toml.Marshal(config.Sections())
+	if err != nil {
+		return fmt.Errorf(
+			"encode config %q: %w",
+			s.configPath,
+			err,
+		)
+	}
+	if err := replaceFileAtomically(
+		s.configPath.String(),
+		encoded,
+		configFilePermission,
+	); err != nil {
+		return fmt.Errorf(
+			"write config %q: %w",
+			s.configPath,
+			err,
+		)
 	}
 	return nil
 }

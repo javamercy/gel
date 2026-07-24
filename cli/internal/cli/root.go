@@ -116,7 +116,7 @@ func initializeServices() error {
 
 	objectStorage := storage.NewObjectStore(workspace.ObjectsDir())
 	indexStorage := storage.NewIndexStore(workspace.IndexPath())
-	configStorage := storage.NewConfigStorage(workspace)
+	configStorage := storage.NewConfigStor(workspace.ConfigPath())
 
 	objectService = core.NewObjectService(objectStorage)
 	indexService = core.NewIndexService(indexStorage)

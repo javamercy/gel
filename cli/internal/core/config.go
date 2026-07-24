@@ -4,10 +4,7 @@ import (
 	"Gel/internal/domain"
 	"Gel/internal/storage"
 	"Gel/internal/validate"
-	"bytes"
 	"fmt"
-
-	"github.com/BurntSushi/toml"
 )
 
 const (
@@ -21,11 +18,11 @@ const (
 
 // ConfigService manages repository config stored in .gel/config.toml.
 type ConfigService struct {
-	configStorage *storage.ConfigStorage
+	configStorage *storage.ConfigStore
 }
 
 // NewConfigService creates a config service.
-func NewConfigService(configStorage *storage.ConfigStorage) *ConfigService {
+func NewConfigService(configStorage *storage.ConfigStore) *ConfigService {
 	return &ConfigService{
 		configStorage: configStorage,
 	}
@@ -109,33 +106,11 @@ func (c *ConfigService) List() ([]string, error) {
 
 // Write encodes and persists config data to storage.
 func (c *ConfigService) Write(config *domain.Config) error {
-	var buffer bytes.Buffer
-	encoder := toml.NewEncoder(&buffer)
-	if err := encoder.Encode(nil); err != nil {
-		return fmt.Errorf("config: failed to encode config: %w", err)
-	}
-	if err := c.configStorage.Write(buffer.Bytes()); err != nil {
-		return err
-	}
 	return nil
 }
 
 // Read loads and decodes config from storage.
 // Empty files are treated as empty config maps.
 func (c *ConfigService) Read() (*domain.Config, error) {
-	data, err := c.configStorage.Read()
-	if err != nil {
-		return nil, err
-	}
-
-	sections := make(map[string]domain.ConfigSection)
-	if _, err := toml.Decode(string(data), sections); err != nil {
-		return nil, fmt.Errorf("config: failed to decode config: %w", err)
-	}
-
-	config, err := domain.NewConfigFromSections(sections)
-	if err != nil {
-		return nil, fmt.Errorf("config: invalid config: %w", err)
-	}
-	return config, nil
+	return nil, nil
 }
