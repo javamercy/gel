@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"maps"
 )
 
 // ConfigSection maps configuration keys to string values within one section.
@@ -45,6 +46,15 @@ func NewConfigFromSections(sections map[string]ConfigSection) (*Config, error) {
 	return &Config{
 		sections: sectionsCopy,
 	}, nil
+}
+
+// Sections returns a defensive copy of the configuration sections.
+func (c *Config) Sections() map[string]ConfigSection {
+	sectionsCopy := make(map[string]ConfigSection, len(c.sections))
+	for name, section := range c.sections {
+		sectionsCopy[name] = maps.Clone(section)
+	}
+	return sectionsCopy
 }
 
 // Get returns the value at section and key and reports whether it exists.
