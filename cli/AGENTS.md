@@ -70,7 +70,7 @@ Package responsibilities:
 
 - `cmd/gel`: executable entrypoint; calls `cli.Execute()`.
 - `internal/cli`: Cobra commands, flag parsing, user-facing output, service wiring.
-- `internal/domain`: pure domain models, value types, serialization, validation; no internal package imports.
+- `internal/domain`: domain models, typed hashes/paths/file modes, repository layout, normalized file stats, canonical object/index codecs, and validation; no internal package imports.
 - `internal/storage`: filesystem persistence for objects, index, and config; depends only on `domain`.
 -
 `internal/core`: shared services for objects, refs, config, index, path resolution, tree walking, and change detection.
@@ -133,10 +133,12 @@ Documentation rules:
 
 ## Domain Model Rules
 
-- Domain types should be deterministic and free of filesystem side effects unless explicitly modeling path or stat data.
-- Domain types that store mutable reference data, especially
-  `[]byte` or slices, must use defensive copies in constructors and accessors.
-- Validate domain invariants at construction boundaries where practical.
+- Use domain constructors and parsers rather than struct literals for types with unexported state. Preserve each type's documented zero-value semantics.
+- Use `Hash` for object identifiers, `AbsolutePath` for native absolute filesystem paths, and `NormalizedPath` for slash-separated repository-relative paths. Convert paths through their domain methods.
+- Domain types should be deterministic and free of filesystem side effects except `ReadFileStat`; `Workspace` and path types derive or validate paths without checking filesystem existence.
+- Domain types that store mutable reference data, including blobs, slices, and maps, must use defensive copies at ownership boundaries.
+- Keep object, tree, commit, and index encoding in their domain codecs. Constructors may canonicalize input order; decoders must reject malformed or non-canonical data.
+- Validate domain invariants at construction, mutation, encoding, and decoding boundaries as appropriate.
 - Keep serialization and deserialization behavior stable unless the task explicitly changes the on-disk format.
 
 ## Object And Repository Format
@@ -158,14 +160,15 @@ Format invariants:
 - Objects are zlib-compressed in `.gel/objects`.
 - Object IDs are SHA-256 hashes encoded as 64 lowercase hex characters.
 - Supported object types are blob, tree, and commit.
-- The index uses `DIRC`, version 2, SHA-256 checksums, and 8-byte entry alignment.
+- Tree entries and index entries use canonical ordering; index entries are ordered by normalized path and merge stage.
+- The index uses the `GIDX` signature, Gel Index Format version 1, big-endian fields, SHA-256 checksums, and 8-byte entry alignment.
 - Refs are plain text files containing a hex hash and newline.
 - Symbolic refs use `ref: <target>\n`.
 
 If changing repository format or `.gel` layout:
 
-- Update constants in `internal/domain/constants.go` and any dependent code.
-- Update serializers, deserializers, readers, and writers together.
+- Update repository-layout constants in `internal/domain/workspace.go`, shared defaults in `internal/domain/constants.go`, and any dependent code.
+- Update the relevant domain codec and format constants together with storage readers and writers.
 - Add or update tests when test infrastructure exists for the changed area.
 - Ask before making backward-incompatible format changes.
 
