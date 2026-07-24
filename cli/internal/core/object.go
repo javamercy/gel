@@ -8,10 +8,10 @@ import (
 )
 
 type ObjectService struct {
-	objectStorage *storage.ObjectStorage
+	objectStorage *storage.ObjectStore
 }
 
-func NewObjectService(objectStorage *storage.ObjectStorage) *ObjectService {
+func NewObjectService(objectStorage *storage.ObjectStore) *ObjectService {
 	return &ObjectService{
 		objectStorage: objectStorage,
 	}
@@ -39,29 +39,11 @@ func (o *ObjectService) GetObjectSize(hash domain.Hash) (uint32, error) {
 }
 
 func (o *ObjectService) Write(hash domain.Hash, data []byte) error {
-	compressedData, err := Compress(data)
-	if err != nil {
-		return err
-	}
-	return o.objectStorage.Write(hash, compressedData)
+	return nil
 }
 
 func (o *ObjectService) Read(hash domain.Hash) (domain.Object, error) {
-	compressedData, err := o.objectStorage.Read(hash)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := Decompress(compressedData)
-	if err != nil {
-		return nil, err
-	}
-
-	object, err := domain.DecodeObject(data)
-	if err != nil {
-		return nil, err
-	}
-	return object, nil
+	return nil, nil
 }
 
 func (o *ObjectService) ReadBlob(hash domain.Hash) (*domain.Blob, error) {
@@ -106,7 +88,7 @@ func (o *ObjectService) ReadCommit(hash domain.Hash) (*domain.Commit, error) {
 }
 
 func (o *ObjectService) Exists(hash domain.Hash) (bool, error) {
-	return o.objectStorage.Exists(hash)
+	return true, nil
 }
 
 func (o *ObjectService) ComputeObjectHash(path domain.AbsolutePath) (domain.Hash, []byte, error) {

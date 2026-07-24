@@ -114,7 +114,7 @@ func initializeServices() error {
 		return err
 	}
 
-	objectStorage := storage.NewObjectStorage(workspace)
+	objectStorage := storage.NewObjectStore(workspace.ObjectsDir())
 	indexStorage := storage.NewIndexStore(workspace.IndexPath())
 	configStorage := storage.NewConfigStorage(workspace)
 

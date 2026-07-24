@@ -2,6 +2,7 @@ package domain
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"strconv"
@@ -16,6 +17,14 @@ type Object interface {
 	Type() ObjectType
 
 	isObject()
+}
+
+// ComputeObjectHash returns the SHA-256 identifier of encoded object data.
+//
+// encoded must contain the complete uncompressed object representation,
+// including its header and body.
+func ComputeObjectHash(encoded []byte) Hash {
+	return sha256.Sum256(encoded)
 }
 
 // EncodeObject encodes object in "<type> <size>\x00<body>" format.
