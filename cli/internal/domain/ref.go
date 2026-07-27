@@ -12,10 +12,10 @@ type RefName struct {
 	value string
 }
 
-// ParseRefName parses value as a reference name.
+// NewRefName parses value as a reference name.
 //
 // It returns an error when value does not satisfy Gel reference-name rules.
-func ParseRefName(value string) (RefName, error) {
+func NewRefName(value string) (RefName, error) {
 	if err := validateRefName(value); err != nil {
 		return RefName{}, fmt.Errorf(
 			"parse ref name: %w",

@@ -80,7 +80,7 @@ func DecodeRef(encoded []byte) (Ref, error) {
 			)
 		}
 
-		target, err := ParseRefName(content[len(symbolicRefPrefix):])
+		target, err := NewRefName(content[len(symbolicRefPrefix):])
 		if err != nil {
 			return Ref{}, fmt.Errorf(
 				"%w: decode symbolic target: %w",
