@@ -87,7 +87,7 @@ func (w *WriteTreeService) writeTreeRecursive(root *directoryNode) (domain.Hash,
 		return domain.Hash{}, err
 	}
 	hexHash := core.ComputeSHA256(encodedData)
-	hash, err := domain.NewHashFromHex(hexHash)
+	hash, err := domain.ParseHash(hexHash)
 	if err != nil {
 		return domain.Hash{}, err
 	}

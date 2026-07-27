@@ -40,7 +40,7 @@ func (c *CommitTreeService) CommitTree(
 	// TODO: fix
 	serializedData := []byte(nil)
 	hexCommitHash := core.ComputeSHA256(serializedData)
-	commitHash, err := domain.NewHashFromHex(hexCommitHash)
+	commitHash, err := domain.ParseHash(hexCommitHash)
 	if err != nil {
 		return domain.Hash{}, fmt.Errorf("commit-tree: %w", err)
 	}

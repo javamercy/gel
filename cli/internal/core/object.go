@@ -103,7 +103,7 @@ func (o *ObjectService) ComputeObjectHash(path domain.AbsolutePath) (domain.Hash
 		return domain.Hash{}, nil, fmt.Errorf("failed to encode object: %w", err)
 	}
 	hexHash := ComputeSHA256(encodedData)
-	hash, err := domain.NewHashFromHex(hexHash)
+	hash, err := domain.ParseHash(hexHash)
 	if err != nil {
 		return domain.Hash{}, nil, err
 	}

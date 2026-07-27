@@ -161,7 +161,7 @@ func (s *ShowService) resolveObjectRef(objectRef string) (resolvedObjectRef, err
 		return resolvedObjectRef{Hash: hash, Decoration: objectRef}, nil
 	}
 
-	hash, err := domain.NewHashFromHex(objectRef)
+	hash, err := domain.ParseHash(objectRef)
 	if err != nil {
 		return resolvedObjectRef{}, fmt.Errorf("'%s': %w", objectRef, core.ErrRefNotFound)
 	}

@@ -135,7 +135,7 @@ func (b *BranchService) Create(name string, startPoint string) error {
 		return b.refService.Write(ref, commitHash)
 	}
 
-	startHash, err := domain.NewHashFromHex(startPoint)
+	startHash, err := domain.ParseHash(startPoint)
 	if err != nil {
 		return fmt.Errorf("branch: '%s': %w", startPoint, ErrInvalidStartPoint)
 	}

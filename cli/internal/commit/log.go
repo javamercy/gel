@@ -111,7 +111,7 @@ func (l *LogService) resolveStartHash(name string) (domain.Hash, error) {
 		return domain.Hash{}, err
 	}
 
-	hash, err := domain.NewHashFromHex(name)
+	hash, err := domain.ParseHash(name)
 	if err != nil {
 		return domain.Hash{}, fmt.Errorf("'%s': %w", name, core.ErrRefNotFound)
 	}

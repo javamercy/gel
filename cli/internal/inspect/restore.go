@@ -246,5 +246,5 @@ func (r *RestoreService) resolveSource(source string) (domain.Hash, error) {
 	} else if !errors.Is(err, core.ErrRefNotFound) {
 		return domain.Hash{}, err
 	}
-	return domain.NewHashFromHex(source)
+	return domain.ParseHash(source)
 }

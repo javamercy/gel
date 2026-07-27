@@ -12,7 +12,7 @@ var readTreeCmd = &cobra.Command{
 	Short: "Read tree objects into the index",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		hash, err := domain.NewHashFromHex(args[0])
+		hash, err := domain.ParseHash(args[0])
 		if err != nil {
 			return err
 		}

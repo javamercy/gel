@@ -257,7 +257,7 @@ func decodeIndexEntry(data []byte) (entry IndexEntry, totalSize int, err error) 
 	offset += indexEntryFileSizeSize
 
 	hashBytes := data[offset : offset+indexEntryHashSize]
-	hash, err := NewHashFromBytes(hashBytes)
+	hash, err := NewHash(hashBytes)
 	if err != nil {
 		return IndexEntry{}, 0, err
 	}

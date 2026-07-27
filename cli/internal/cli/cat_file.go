@@ -20,7 +20,7 @@ var catFileCmd = &cobra.Command{
 	Short: "Display the content of a Git object",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		hash, err := domain.NewHashFromHex(args[0])
+		hash, err := domain.ParseHash(args[0])
 		if err != nil {
 			return err
 		}

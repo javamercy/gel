@@ -108,7 +108,7 @@ func decodeTreeEntries(body []byte) ([]TreeEntry, error) {
 			)
 		}
 
-		hash, err := NewHashFromBytes(body[offset : offset+HashByteLength])
+		hash, err := NewHash(body[offset : offset+HashByteLength])
 		if err != nil {
 			return nil, fmt.Errorf(
 				"entry %q at offset %d: parse hash: %w",

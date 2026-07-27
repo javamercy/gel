@@ -10,6 +10,7 @@ import (
 const (
 	// HashByteLength is the length of a SHA-256 hash in raw bytes.
 	HashByteLength = sha256.Size
+
 	// HashHexLength is the length of a SHA-256 hash encoded as hexadecimal.
 	HashHexLength = HashByteLength * 2
 )
@@ -20,9 +21,9 @@ var ErrInvalidHash = errors.New("invalid hash")
 // Hash represents a SHA-256 object identifier.
 type Hash [HashByteLength]byte
 
-// NewHashFromHex constructs a Hash from its 64-character lowercase
+// ParseHash constructs a Hash from its 64-character lowercase
 // hexadecimal representation.
-func NewHashFromHex(hexHash string) (Hash, error) {
+func ParseHash(hexHash string) (Hash, error) {
 	if len(hexHash) != HashHexLength {
 		return Hash{}, fmt.Errorf(
 			"%w: got %d characters, want %d",
@@ -50,11 +51,11 @@ func NewHashFromHex(hexHash string) (Hash, error) {
 		)
 	}
 
-	return NewHashFromBytes(decoded)
+	return NewHash(decoded)
 }
 
-// NewHashFromBytes constructs a Hash from its 32-byte binary representation.
-func NewHashFromBytes(data []byte) (Hash, error) {
+// NewHash constructs a Hash from its 32-byte binary representation.
+func NewHash(data []byte) (Hash, error) {
 	if len(data) != HashByteLength {
 		return Hash{}, fmt.Errorf(
 			"%w: got %d bytes, want %d",

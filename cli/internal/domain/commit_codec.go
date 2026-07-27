@@ -294,7 +294,7 @@ func decodeCommitHash(data []byte) (Hash, error) {
 		)
 	}
 
-	hash, err := NewHashFromHex(string(data))
+	hash, err := ParseHash(string(data))
 	if err != nil {
 		return Hash{}, fmt.Errorf(
 			"decode hash %q: %w",

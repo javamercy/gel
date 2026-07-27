@@ -91,7 +91,7 @@ func (r *RefService) Read(ref string) (domain.Hash, error) {
 	}
 
 	hexHash := strings.TrimSpace(string(contentBytes))
-	hash, err := domain.NewHashFromHex(hexHash)
+	hash, err := domain.ParseHash(hexHash)
 	if err != nil {
 		return domain.Hash{}, fmt.Errorf("ref: %w", err)
 	}

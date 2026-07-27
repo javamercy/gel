@@ -31,7 +31,7 @@ var updateRefCmd = &cobra.Command{
 			return fmt.Errorf("update-ref: missing new hash argument")
 		case 2:
 			hashStr := args[1]
-			hash, err := domain.NewHashFromHex(hashStr)
+			hash, err := domain.ParseHash(hashStr)
 			if err != nil {
 				return fmt.Errorf("update-ref: %w", err)
 			}
@@ -46,11 +46,11 @@ var updateRefCmd = &cobra.Command{
 
 			newHashStr := args[1]
 			oldHashStr := args[2]
-			newHash, err := domain.NewHashFromHex(newHashStr)
+			newHash, err := domain.ParseHash(newHashStr)
 			if err != nil {
 				return fmt.Errorf("update-ref: %w", err)
 			}
-			oldHash, err := domain.NewHashFromHex(oldHashStr)
+			oldHash, err := domain.ParseHash(oldHashStr)
 			if err != nil {
 				return fmt.Errorf("update-ref: %w", err)
 			}

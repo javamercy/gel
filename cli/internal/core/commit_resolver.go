@@ -56,7 +56,7 @@ func (r *CommitResolver) resolveBase(base string) (domain.Hash, error) {
 		return r.refService.Resolve(domain.HeadFileName)
 
 	case isFullHash(base):
-		hash, err := domain.NewHashFromHex(base)
+		hash, err := domain.ParseHash(base)
 		if err != nil {
 			return domain.Hash{}, err
 		}
