@@ -1,46 +1,27 @@
 package cli
 
 import (
-	"Gel/internal/core"
-	"Gel/internal/domain"
-
 	"github.com/spf13/cobra"
 )
 
-var (
-	hashObjectWriteFlag bool
-)
+func newHashObjectCommand() *cobra.Command {
+	var write bool
 
-// hashObjectCmd computes SHA-256 object IDs for one or more files.
-// With -w, it also writes computed blob objects into the repository object store.
-var hashObjectCmd = &cobra.Command{
-	Use:   "hash-object <file>...",
-	Short: "Compute the hash of a file",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		absolutePaths := make([]domain.AbsolutePath, len(args))
-		for i, path := range args {
-			absolutePath, err := domain.NewAbsolutePath(path)
-			if err != nil {
-				return err
-			}
-			absolutePaths[i] = absolutePath
-		}
-		hashes, err := hashObjectService.HashObjects(
-			absolutePaths, core.HashObjectOptions{Write: hashObjectWriteFlag},
-		)
-		if err != nil {
-			return err
-		}
+	hashObjectCommand := &cobra.Command{
+		Use:   "hash-object <file>...",
+		Short: "Compute the hash of a file",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
+	}
 
-		for _, hash := range hashes {
-			cmd.Println(hash)
-		}
-		return nil
-	},
-}
-
-func init() {
-	hashObjectCmd.Flags().BoolVarP(&hashObjectWriteFlag, "write", "w", false, "Write the object to the object database")
-	rootCmd.AddCommand(hashObjectCmd)
+	hashObjectCommand.Flags().BoolVarP(
+		&write,
+		"write",
+		"w",
+		false,
+		"Write the object to the object database",
+	)
+	return hashObjectCommand
 }
