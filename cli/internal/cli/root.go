@@ -18,6 +18,9 @@ func newRootCommand() *cobra.Command {
 		Use:   "Gel",
 		Short: "An Agentic Version Control System",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if commandsWithoutRepository[cmd.Name()] {
+				return nil
+			}
 			return initialize()
 		},
 	}
