@@ -39,7 +39,7 @@ func validateRefName(value string) error {
 			return errors.New("value contains a backslash or control character")
 		}
 	}
-	if value != "HEAD" {
+	if value == "HEAD" {
 		return nil
 	}
 	if !strings.HasPrefix(value, "refs/") {
