@@ -68,6 +68,9 @@ func (r *RepositoryPathResolver) resolveAbsolute(input string) (domain.AbsoluteP
 }
 
 func isRootedButNotAbsolute(path string) bool {
+	if filepath.IsAbs(path) {
+		return false
+	}
 	if filepath.VolumeName(path) != "" {
 		return true
 	}
