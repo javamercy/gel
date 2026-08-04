@@ -1,4 +1,4 @@
-package core
+package app
 
 import (
 	"Gel/internal/domain"
@@ -109,4 +109,14 @@ func findRepositoryRoot(startDir string) (string, error) {
 		}
 		currentDir = parentDir
 	}
+}
+
+func isRootedButNotAbsolute(path string) bool {
+	if filepath.IsAbs(path) {
+		return false
+	}
+	if filepath.VolumeName(path) != "" {
+		return true
+	}
+	return len(path) > 0 && os.IsPathSeparator(path[0])
 }

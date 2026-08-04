@@ -1,32 +1,69 @@
 package cli
 
 import (
-	"Gel/internal/core"
+	"Gel/internal/app"
+	"Gel/internal/domain"
+	"Gel/internal/storage"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var commandsWithoutRepository = map[string]bool{
-	"init": true,
-	"help": true,
+type repository struct {
+	workspace   *domain.Workspace
+	objectStore *storage.ObjectStore
+}
+
+type repositoryProvider struct {
+	repository *repository
+	err        error
+	loaded     bool
+
+	getwd func() (string, error)
+}
+
+func newRepositoryProvider() *repositoryProvider {
+	return &repositoryProvider{
+		getwd: os.Getwd,
+	}
+}
+
+func (p *repositoryProvider) Load() (*repository, error) {
+	if p.loaded {
+		return p.repository, p.err
+	}
+
+	p.loaded = true
+
+	cwd, err := p.getwd()
+	if err != nil {
+		p.err = fmt.Errorf("get working directory: %w", err)
+		return nil, p.err
+	}
+
+	workspace, err := app.DiscoverWorkspace(cwd)
+	if err != nil {
+		p.err = fmt.Errorf("discover workspace: %w", err)
+		return nil, p.err
+	}
+
+	p.repository = &repository{
+		workspace:   workspace,
+		objectStore: storage.NewObjectStore(workspace.ObjectsDir()),
+	}
+	return p.repository, nil
 }
 
 func newRootCommand() *cobra.Command {
+	provider := newRepositoryProvider()
 	rootCommand := &cobra.Command{
 		Use:   "Gel",
 		Short: "An Agentic Version Control System",
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			if commandsWithoutRepository[cmd.Name()] {
-				return nil
-			}
-			return initialize()
-		},
 	}
-
 	rootCommand.AddCommand(
 		newInitCommand(),
+		newHashObjectCommand(provider),
 	)
 	return rootCommand
 }
@@ -34,25 +71,11 @@ func newRootCommand() *cobra.Command {
 func Execute() int {
 	cmd := newRootCommand()
 	cmd.SilenceErrors = true
+	cmd.SilenceUsage = true
 
 	if err := cmd.Execute(); err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 		return 1
 	}
 	return 0
-}
-
-func initialize() error {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	workspace, err := core.DiscoverWorkspace(cwd)
-	if err != nil {
-		return err
-	}
-
-	_ = workspace
-	return nil
 }
