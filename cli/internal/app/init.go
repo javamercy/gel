@@ -15,11 +15,20 @@ const (
 	defaultBranchRef string = "refs/heads/main"
 )
 
+// InitResult describes the repository metadata prepared by Init.
 type InitResult struct {
-	GelDir        domain.AbsolutePath
+	// GelDir is the absolute path to the repository metadata directory.
+	GelDir domain.AbsolutePath
+	// Reinitialized reports whether the metadata directory existed before Init.
 	Reinitialized bool
 }
 
+// Init creates the Gel repository layout for workspace.
+//
+// It creates the repository root, metadata, object, and branch-head
+// directories when needed. It also creates HEAD pointing to main and an empty
+// configuration file without replacing existing regular files. workspace must
+// not be nil.
 func Init(workspace *domain.Workspace) (InitResult, error) {
 	if workspace == nil {
 		return InitResult{}, errors.New("workspace is nil")

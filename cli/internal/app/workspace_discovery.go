@@ -8,17 +8,16 @@ import (
 	"path/filepath"
 )
 
-var (
-	// ErrRepositoryNotFound indicates that repository discovery reached the
-	// filesystem root without finding a .gel directory.
-	ErrRepositoryNotFound = errors.New("repository not found")
-)
+// ErrRepositoryNotFound indicates that repository discovery reached the
+// filesystem root without finding a .gel directory.
+var ErrRepositoryNotFound = errors.New("repository not found")
 
 // DiscoverWorkspace searches startDir and its ancestors for a Gel repository.
 //
-// startDir may be relative or absolute, but it must identify an existing
-// directory. Discovery returns an error matching ErrRepositoryNotFound when
-// no .gel directory exists in the directory hierarchy.
+// Relative startDir values are resolved from the current working directory.
+// startDir must identify an existing directory. Discovery returns an error
+// matching [ErrRepositoryNotFound] when no .gel directory exists in the
+// directory hierarchy.
 func DiscoverWorkspace(startDir string) (*domain.Workspace, error) {
 	if startDir == "" {
 		return nil, errors.New("workspace start directory is empty")
