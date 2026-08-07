@@ -64,6 +64,7 @@ func newRootCommand() *cobra.Command {
 	rootCommand.AddCommand(
 		newInitCommand(),
 		newHashObjectCommand(provider),
+		newCatFileCommand(provider),
 	)
 	return rootCommand
 }
