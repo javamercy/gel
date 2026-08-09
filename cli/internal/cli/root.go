@@ -13,6 +13,7 @@ import (
 type repository struct {
 	workspace   *domain.Workspace
 	objectStore *storage.ObjectStore
+	configStore *storage.ConfigStore
 }
 
 type repositoryProvider struct {
@@ -51,6 +52,7 @@ func (p *repositoryProvider) Load() (*repository, error) {
 	p.repository = &repository{
 		workspace:   workspace,
 		objectStore: storage.NewObjectStore(workspace.ObjectsDir()),
+		configStore: storage.NewConfigStore(workspace.ConfigPath()),
 	}
 	return p.repository, nil
 }
@@ -65,6 +67,7 @@ func newRootCommand() *cobra.Command {
 		newInitCommand(),
 		newHashObjectCommand(provider),
 		newCatFileCommand(provider),
+		newConfigCommand(provider),
 	)
 	return rootCommand
 }
