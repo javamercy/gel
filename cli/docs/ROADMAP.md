@@ -2,8 +2,8 @@
 
 - [X] `init`
 - [X] `hash-object`
-- [ ] `cat-file`
-- [ ] `config`
+- [X] `cat-file`
+- [X] `config`
 - [ ] `add`
 - [ ] `status`
 - [ ] `diff`
