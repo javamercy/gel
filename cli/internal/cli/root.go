@@ -11,9 +11,11 @@ import (
 )
 
 type repository struct {
+	workingDir  domain.AbsolutePath
 	workspace   *domain.Workspace
 	objectStore *storage.ObjectStore
 	configStore *storage.ConfigStore
+	indexStore  *storage.IndexStore
 }
 
 type repositoryProvider struct {
@@ -43,6 +45,12 @@ func (p *repositoryProvider) Load() (*repository, error) {
 		return nil, p.err
 	}
 
+	workingDir, err := domain.NewAbsolutePath(cwd)
+	if err != nil {
+		p.err = fmt.Errorf("create absolute path: %w", err)
+		return nil, p.err
+	}
+
 	workspace, err := app.DiscoverWorkspace(cwd)
 	if err != nil {
 		p.err = fmt.Errorf("discover workspace: %w", err)
@@ -50,9 +58,11 @@ func (p *repositoryProvider) Load() (*repository, error) {
 	}
 
 	p.repository = &repository{
+		workingDir:  workingDir,
 		workspace:   workspace,
 		objectStore: storage.NewObjectStore(workspace.ObjectsDir()),
 		configStore: storage.NewConfigStore(workspace.ConfigPath()),
+		indexStore:  storage.NewIndexStore(workspace.IndexPath()),
 	}
 	return p.repository, nil
 }
@@ -68,6 +78,7 @@ func newRootCommand() *cobra.Command {
 		newHashObjectCommand(provider),
 		newCatFileCommand(provider),
 		newConfigCommand(provider),
+		newAddCommand(provider),
 	)
 	return rootCommand
 }
