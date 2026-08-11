@@ -47,7 +47,7 @@ func (i *Index) AddEntry(entry IndexEntry) error {
 		)
 	}
 
-	position, found := i.findEntryPosition(entry)
+	position, found := i.findEntryPosition(entry.path, entry.stage)
 	if found {
 		return fmt.Errorf(
 			"add entry: entry for path %q at stage %d already exists",
@@ -77,7 +77,7 @@ func (i *Index) UpdateEntry(entry IndexEntry) (bool, error) {
 		)
 	}
 
-	position, found := i.findEntryPosition(entry)
+	position, found := i.findEntryPosition(entry.path, entry.stage)
 	if !found {
 		return false, nil
 	}
@@ -96,7 +96,7 @@ func (i *Index) SetEntry(entry IndexEntry) error {
 		)
 	}
 
-	position, found := i.findEntryPosition(entry)
+	position, found := i.findEntryPosition(entry.path, entry.stage)
 	if found {
 		i.entries[position] = entry
 		return nil
@@ -116,8 +116,8 @@ func (i *Index) SetEntry(entry IndexEntry) error {
 // RemoveEntry removes an existing entry with the same identity.
 //
 // The returned boolean reports whether the entry existed.
-func (i *Index) RemoveEntry(entry IndexEntry) bool {
-	position, found := i.findEntryPosition(entry)
+func (i *Index) RemoveEntry(path NormalizedPath, stage IndexStage) bool {
+	position, found := i.findEntryPosition(path, stage)
 	if !found {
 		return false
 	}
@@ -127,23 +127,23 @@ func (i *Index) RemoveEntry(entry IndexEntry) bool {
 }
 
 // FindEntry returns the entry with the same identity if it exists.
-func (i *Index) FindEntry(entry IndexEntry) (IndexEntry, bool) {
-	position, found := i.findEntryPosition(entry)
+func (i *Index) FindEntry(path NormalizedPath, stage IndexStage) (IndexEntry, bool) {
+	position, found := i.findEntryPosition(path, stage)
 	if found {
 		return i.entries[position], true
 	}
 	return IndexEntry{}, false
 }
 
-func (i *Index) findEntryPosition(entry IndexEntry) (position int, found bool) {
+func (i *Index) findEntryPosition(path NormalizedPath, stage IndexStage) (position int, found bool) {
 	position = sort.Search(
 		len(i.entries),
 		func(j int) bool {
-			return compareIndexEntries(i.entries[j], entry) >= 0
+			return compareIndexEntries(i.entries[j], IndexEntry{path: path, stage: stage}) >= 0
 		},
 	)
 	found = position < len(i.entries) &&
-		compareIndexEntries(i.entries[position], entry) == 0
+		compareIndexEntries(i.entries[position], IndexEntry{path: path, stage: stage}) == 0
 	return position, found
 }
 
