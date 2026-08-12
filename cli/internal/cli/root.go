@@ -79,6 +79,7 @@ func newRootCommand() *cobra.Command {
 		newCatFileCommand(provider),
 		newConfigCommand(provider),
 		newAddCommand(provider),
+		newWriteTreeCommand(provider),
 	)
 	return rootCommand
 }
