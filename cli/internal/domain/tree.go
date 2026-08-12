@@ -66,6 +66,8 @@ type Tree struct {
 // The provided slice is copied. Entries may be provided in any order.
 func NewTreeFromEntries(entries []TreeEntry) (*Tree, error) {
 	entriesCopy := slices.Clone(entries)
+	slices.SortFunc(entriesCopy, compareTreeEntries)
+
 	if err := validateTreeEntries(entriesCopy); err != nil {
 		return nil, fmt.Errorf(
 			"%w: construct tree: %w",
@@ -73,9 +75,6 @@ func NewTreeFromEntries(entries []TreeEntry) (*Tree, error) {
 			err,
 		)
 	}
-
-	slices.SortFunc(entriesCopy, compareTreeEntries)
-
 	return &Tree{
 		entries: entriesCopy,
 	}, nil
@@ -112,13 +111,11 @@ func validateTreeEntries(entries []TreeEntry) error {
 
 		seenNames[entry.name] = struct{}{}
 
-		prev := entries[i-1]
-		curr := entries[i]
-		if compareTreeEntries(prev, curr) > 0 {
+		if i > 0 && compareTreeEntries(entries[i-1], entry) > 0 {
 			return fmt.Errorf(
 				"entry %q appears before earlier entry %q",
-				prev.name,
-				curr.name,
+				entries[i-1].name,
+				entry.name,
 			)
 		}
 	}
