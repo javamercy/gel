@@ -42,17 +42,13 @@ func DecodeTree(data []byte) (*Tree, error) {
 }
 
 func encodeTreeEntries(entries []TreeEntry) []byte {
-	encoded := make([]byte, 0)
+	var encoded []byte
 	for _, entry := range entries {
-		encoded = append(
-			encoded,
-			[]byte(fmt.Sprintf(
-				"%s %s\x00%s",
-				entry.mode.String(),
-				entry.name,
-				entry.hash.String(),
-			))...,
-		)
+		encoded = append(encoded, entry.mode.String()...)
+		encoded = append(encoded, ' ')
+		encoded = append(encoded, entry.name...)
+		encoded = append(encoded, 0)
+		encoded = append(encoded, entry.hash[:]...)
 	}
 	return encoded
 }
