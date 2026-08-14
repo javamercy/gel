@@ -80,6 +80,7 @@ func newRootCommand() *cobra.Command {
 		newConfigCommand(provider),
 		newAddCommand(provider),
 		newWriteTreeCommand(provider),
+		newCommitTreeCommand(provider),
 	)
 	return rootCommand
 }
