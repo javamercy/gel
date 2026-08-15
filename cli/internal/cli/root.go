@@ -81,6 +81,7 @@ func newRootCommand() *cobra.Command {
 		newAddCommand(provider),
 		newWriteTreeCommand(provider),
 		newCommitTreeCommand(provider),
+		newReadTreeCommand(provider),
 	)
 	return rootCommand
 }
