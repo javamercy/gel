@@ -1,15 +1,48 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	"Gel/internal/app"
+	"errors"
+	"fmt"
 
-func newCommitCommand() *cobra.Command {
+	"github.com/spf13/cobra"
+)
+
+func newCommitCommand(provider *repositoryProvider) *cobra.Command {
 	var message string
 	commitCommand := &cobra.Command{
-		Use:   "commit",
+		Use:   "commit -m <message>",
 		Short: "Record changes to the repository",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return nil
+			if !cmd.Flags().Changed("message") {
+				return errors.New("commit message is required")
+			}
+
+			repository, err := provider.Load()
+			if err != nil {
+				return err
+			}
+
+			commit := app.NewCommit(
+				repository.refStore,
+				repository.indexStore,
+				repository.objectStore,
+				repository.configStore,
+			)
+
+			result, err := commit.Run(
+				app.CommitInput{Message: message},
+			)
+			if err != nil {
+				return err
+			}
+
+			_, err = fmt.Fprintln(
+				cmd.OutOrStdout(),
+				result.CommitHash.Hex(),
+			)
+			return err
 		},
 	}
 

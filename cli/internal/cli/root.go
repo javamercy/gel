@@ -16,6 +16,7 @@ type repository struct {
 	objectStore *storage.ObjectStore
 	configStore *storage.ConfigStore
 	indexStore  *storage.IndexStore
+	refStore    *storage.RefStore
 }
 
 type repositoryProvider struct {
@@ -63,6 +64,7 @@ func (p *repositoryProvider) Load() (*repository, error) {
 		objectStore: storage.NewObjectStore(workspace.ObjectsDir()),
 		configStore: storage.NewConfigStore(workspace.ConfigPath()),
 		indexStore:  storage.NewIndexStore(workspace.IndexPath()),
+		refStore:    storage.NewRefStore(workspace.GelDir()),
 	}
 	return p.repository, nil
 }
@@ -83,6 +85,7 @@ func newRootCommand() *cobra.Command {
 		newCommitTreeCommand(provider),
 		newReadTreeCommand(provider),
 		newLsFilesCommand(provider),
+		newCommitCommand(provider),
 	)
 	return rootCommand
 }
