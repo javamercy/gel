@@ -2,12 +2,15 @@ package storage
 
 import (
 	"Gel/internal/domain"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
 )
 
 const indexFilePermission fs.FileMode = 0o644
+
+var ErrIndexNotExist = fmt.Errorf("index does not exist")
 
 // IndexStore persists the repository index on the filesystem.
 type IndexStore struct {
@@ -25,6 +28,13 @@ func NewIndexStore(indexPath domain.AbsolutePath) *IndexStore {
 func (s *IndexStore) Load() (*domain.Index, error) {
 	data, err := os.ReadFile(s.indexPath.String())
 	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil, fmt.Errorf(
+				"read index: %w: %w",
+				ErrIndexNotExist,
+				err,
+			)
+		}
 		return nil, fmt.Errorf(
 			"read index %q: %w",
 			s.indexPath.String(),

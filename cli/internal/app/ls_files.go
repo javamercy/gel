@@ -5,7 +5,6 @@ import (
 	"Gel/internal/storage"
 	"errors"
 	"fmt"
-	"io/fs"
 	"path/filepath"
 	"strings"
 )
@@ -82,7 +81,7 @@ func (l *LsFiles) Run(input LsFilesInput) (LsFilesResult, error) {
 
 	index, err := l.indexStore.Load()
 	if err != nil {
-		if errors.Is(err, fs.ErrNotExist) {
+		if errors.Is(err, storage.ErrIndexNotExist) {
 			return result, nil
 		}
 		return result, fmt.Errorf(

@@ -5,7 +5,6 @@ import (
 	"Gel/internal/storage"
 	"errors"
 	"fmt"
-	"io/fs"
 	"os"
 )
 
@@ -70,7 +69,7 @@ func (a *Add) Run(input AddInput) (AddResult, error) {
 
 	index, err := a.indexStore.Load()
 	if err != nil {
-		if !errors.Is(err, fs.ErrNotExist) {
+		if !errors.Is(err, storage.ErrIndexNotExist) {
 			return AddResult{}, fmt.Errorf(
 				"load index: %w",
 				err,
