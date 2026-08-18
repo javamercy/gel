@@ -4,20 +4,7 @@ import (
 	"Gel/internal/domain"
 	"Gel/internal/storage"
 	"fmt"
-	"strings"
 )
-
-type fileNode struct {
-	mode domain.FileMode
-	hash domain.Hash
-	name string
-}
-
-type treeNode struct {
-	name     string
-	children map[string]*treeNode
-	files    []fileNode
-}
 
 // WriteTreeResult contains the hash of the tree written from the index.
 type WriteTreeResult struct {
@@ -60,121 +47,17 @@ func (w *WriteTree) Run() (WriteTreeResult, error) {
 		)
 	}
 
-	entries := index.Entries()
-	for _, entry := range entries {
-		if entry.Stage() != domain.IndexStageNormal {
-			return WriteTreeResult{}, fmt.Errorf(
-				"cannot write tree: path %q has merge stage %d",
-				entry.Path(),
-				entry.Stage(),
-			)
-		}
-	}
-
-	rootTree := buildRootTree(entries)
-	rootHash, err := w.writeTreeRecursive(rootTree)
+	rootHash, err := writeIndexTree(
+		index.Entries(),
+		w.objectStore,
+	)
 	if err != nil {
 		return WriteTreeResult{}, fmt.Errorf(
-			"write tree: %w",
+			"write index tree: %w",
 			err,
 		)
 	}
 	return WriteTreeResult{
 		Hash: rootHash,
 	}, nil
-}
-
-func (w *WriteTree) writeTreeRecursive(node *treeNode) (domain.Hash, error) {
-	var entries []domain.TreeEntry
-
-	for _, childTree := range node.children {
-		childHash, err := w.writeTreeRecursive(childTree)
-		if err != nil {
-			return domain.Hash{}, fmt.Errorf(
-				"write child tree %s: %w",
-				childTree.name,
-				err,
-			)
-		}
-
-		entry, err := domain.NewTreeEntry(
-			domain.FileModeDirectory,
-			childHash,
-			childTree.name,
-		)
-		if err != nil {
-			return domain.Hash{}, fmt.Errorf(
-				"create tree entry for child tree %s: %w",
-				childTree.name,
-				err,
-			)
-		}
-
-		entries = append(entries, entry)
-	}
-
-	for _, file := range node.files {
-		entry, err := domain.NewTreeEntry(
-			file.mode,
-			file.hash,
-			file.name,
-		)
-		if err != nil {
-			return domain.Hash{}, fmt.Errorf(
-				"create tree entry for file %s: %w",
-				file.name,
-				err,
-			)
-		}
-
-		entries = append(entries, entry)
-	}
-
-	tree, err := domain.NewTreeFromEntries(entries)
-	if err != nil {
-		return domain.Hash{}, fmt.Errorf(
-			"create tree from entries: %w",
-			err,
-		)
-	}
-
-	hash, err := w.objectStore.Write(tree)
-	if err != nil {
-		return domain.Hash{}, fmt.Errorf(
-			"write tree object: %w",
-			err,
-		)
-	}
-	return hash, nil
-}
-
-func buildRootTree(entries []domain.IndexEntry) *treeNode {
-	root := &treeNode{
-		children: make(map[string]*treeNode),
-	}
-
-	for _, entry := range entries {
-		current := root
-		names := strings.Split(entry.Path().String(), "/")
-
-		for _, name := range names[:len(names)-1] {
-			child := current.children[name]
-			if child == nil {
-				child = &treeNode{
-					name:     name,
-					children: make(map[string]*treeNode),
-				}
-				current.children[name] = child
-			}
-			current = child
-		}
-		current.files = append(
-			current.files, fileNode{
-				mode: entry.Mode(),
-				hash: entry.Hash(),
-				name: names[len(names)-1],
-			},
-		)
-	}
-	return root
 }
