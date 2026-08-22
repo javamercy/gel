@@ -107,6 +107,25 @@ func (s *ObjectStore) Read(hash domain.Hash) (domain.Object, error) {
 	return object, nil
 }
 
+func (s *ObjectStore) ReadAs[T domain.Object](hash domain.Hash) (T, error) {
+	var zero T
+
+	object, err := s.Read(hash)
+	if err != nil {
+		return zero, err
+	}
+
+	typedObject, ok := object.(T)
+	if !ok {
+		return zero, fmt.Errorf(
+			"object %s is not of type %T",
+			hash,
+			zero,
+		)
+	}
+	return typedObject, nil
+}
+
 func (s *ObjectStore) objectPaths(hash domain.Hash) (
 	objectDir domain.AbsolutePath,
 	objectPath domain.AbsolutePath,
