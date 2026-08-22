@@ -92,21 +92,12 @@ func (c *Commit) Run(input CommitInput) (CommitResult, error) {
 			)
 		}
 
-		parentObject, err := c.objectStore.Read(parentHash)
+		parentCommit, err = c.objectStore.ReadAs[*domain.Commit](parentHash)
 		if err != nil {
 			return result, fmt.Errorf(
 				"read parent commit %q: %w",
 				parentHash,
 				err,
-			)
-		}
-
-		parentCommit, ok = parentObject.(*domain.Commit)
-		if !ok {
-			return result, fmt.Errorf(
-				"object %q is %s, not commit",
-				parentHash,
-				parentObject.Type(),
 			)
 		}
 

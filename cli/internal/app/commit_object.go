@@ -24,7 +24,7 @@ func writeCommitObject(
 		return domain.Hash{}, err
 	}
 
-	tree, err := objectStore.Read(input.treeHash)
+	_, err := objectStore.ReadAs[*domain.Tree](input.treeHash)
 	if err != nil {
 		return domain.Hash{}, fmt.Errorf(
 			"read tree object %q: %w",
@@ -32,28 +32,12 @@ func writeCommitObject(
 			err,
 		)
 	}
-	if tree.Type() != domain.ObjectTypeTree {
-		return domain.Hash{}, fmt.Errorf(
-			"object %q is %s, not tree",
-			input.treeHash,
-			tree.Type(),
-		)
-	}
-
 	for _, parentHash := range input.parentHashes {
-		parent, err := objectStore.Read(parentHash)
-		if err != nil {
+		if _, err := objectStore.ReadAs[*domain.Commit](parentHash); err != nil {
 			return domain.Hash{}, fmt.Errorf(
 				"read parent commit %q: %w",
 				parentHash,
 				err,
-			)
-		}
-		if parent.Type() != domain.ObjectTypeCommit {
-			return domain.Hash{}, fmt.Errorf(
-				"object %q is %s, not commit",
-				parentHash,
-				parent.Type(),
 			)
 		}
 	}

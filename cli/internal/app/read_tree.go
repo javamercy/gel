@@ -54,19 +54,11 @@ func (r *ReadTree) Run(input ReadTreeInput) error {
 			return fmt.Errorf("tree hash cannot be zero")
 		}
 
-		object, err := r.objectStore.Read(input.Hash)
+		tree, err := r.objectStore.ReadAs[*domain.Tree](input.Hash)
 		if err != nil {
 			return fmt.Errorf(
 				"read tree object: %w",
 				err,
-			)
-		}
-
-		tree, ok := object.(*domain.Tree)
-		if !ok {
-			return fmt.Errorf(
-				"object %s is not a tree",
-				input.Hash,
 			)
 		}
 
@@ -109,20 +101,12 @@ func (r *ReadTree) flattenTreeRecursive(
 		}
 
 		if treeEntry.Mode().IsDirectory() {
-			object, err := r.objectStore.Read(treeEntry.Hash())
+			childTree, err := r.objectStore.ReadAs[*domain.Tree](treeEntry.Hash())
 			if err != nil {
 				return nil, fmt.Errorf(
 					"read child tree %s: %w",
 					pathText,
 					err,
-				)
-			}
-
-			childTree, ok := object.(*domain.Tree)
-			if !ok {
-				return nil, fmt.Errorf(
-					"object for directory %q is not a tree",
-					pathText,
 				)
 			}
 

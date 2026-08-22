@@ -174,18 +174,12 @@ func (b *Branch) resolveStartPoint(startPoint string) (domain.Hash, error) {
 	}
 
 	if hash, err := domain.ParseHash(startPoint); err == nil {
-		object, err := b.objectStore.Read(hash)
+		_, err := b.objectStore.ReadAs[*domain.Commit](hash)
 		if err != nil {
 			return domain.Hash{}, fmt.Errorf(
 				"read start point %q: %w",
 				startPoint,
 				err,
-			)
-		}
-		if _, ok := object.(*domain.Commit); !ok {
-			return domain.Hash{}, fmt.Errorf(
-				"start point %q is not a commit",
-				startPoint,
 			)
 		}
 		return hash, nil
