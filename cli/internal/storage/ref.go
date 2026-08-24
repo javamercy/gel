@@ -15,8 +15,10 @@ const (
 )
 
 var (
+	// ErrRefNotExist indicates that a named reference does not exist.
 	ErrRefNotExist = errors.New("ref does not exist")
-	ErrRefExists   = errors.New("ref already exists")
+	// ErrRefExists indicates that a named reference already exists.
+	ErrRefExists = errors.New("ref already exists")
 )
 
 // RefStore persists Gel references beneath a repository's .gel directory.
@@ -33,7 +35,8 @@ func NewRefStore(gelDir domain.AbsolutePath) *RefStore {
 
 // Read reads and decodes the reference identified by name.
 //
-// It returns an error when the reference cannot be read or is malformed.
+// It returns an error matching [ErrRefNotExist] when name does not exist, or
+// an error when the reference is malformed or cannot be read.
 func (s *RefStore) Read(name domain.RefName) (domain.Ref, error) {
 	refPath, err := s.gelDir.Join(name.String())
 	if err != nil {
@@ -71,7 +74,8 @@ func (s *RefStore) Read(name domain.RefName) (domain.Ref, error) {
 
 // Write encodes ref and atomically replaces the reference identified by name.
 //
-// It creates parent reference directories as needed.
+// It creates parent reference directories as needed. Existing references are
+// replaced.
 func (s *RefStore) Write(name domain.RefName, ref domain.Ref) error {
 	encoded, err := domain.EncodeRef(ref)
 	if err != nil {
@@ -109,6 +113,10 @@ func (s *RefStore) Write(name domain.RefName, ref domain.Ref) error {
 	return nil
 }
 
+// List returns references beneath prefix in lexical path order.
+//
+// It returns an error when the prefix cannot be read or a reference path is
+// invalid.
 func (s *RefStore) List(prefix domain.RefName) ([]domain.RefName, error) {
 	refsPath, err := s.gelDir.Join(prefix.String())
 	if err != nil {
@@ -164,6 +172,9 @@ func (s *RefStore) List(prefix domain.RefName) ([]domain.RefName, error) {
 	return refs, nil
 }
 
+// Create stores ref under name without replacing an existing reference.
+//
+// It returns an error matching [ErrRefExists] when name already exists.
 func (s *RefStore) Create(name domain.RefName, ref domain.Ref) error {
 	encoded, err := domain.EncodeRef(ref)
 	if err != nil {
@@ -216,6 +227,9 @@ func (s *RefStore) Create(name domain.RefName, ref domain.Ref) error {
 	return nil
 }
 
+// Delete removes the reference identified by name.
+//
+// It returns an error matching [ErrRefNotExist] when name does not exist.
 func (s *RefStore) Delete(name domain.RefName) error {
 	refPath, err := s.gelDir.Join(name.String())
 	if err != nil {

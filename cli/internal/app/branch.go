@@ -10,19 +10,29 @@ import (
 
 const headsRefPrefix = "refs/heads"
 
+// BranchListItem describes one local branch.
 type BranchListItem struct {
-	Name      string
+	// Name is the branch name without the refs/heads/ prefix.
+	Name string
+	// IsCurrent reports whether this is the branch targeted by HEAD.
 	IsCurrent bool
 }
+
+// BranchListResult contains the local branches discovered by Branch.List.
 type BranchListResult struct {
+	// Branches contains one item for each local branch.
 	Branches []BranchListItem
 }
 
+// Branch manages local branch references.
 type Branch struct {
 	refStore    *storage.RefStore
 	objectStore *storage.ObjectStore
 }
 
+// NewBranch returns a Branch backed by refStore and objectStore.
+//
+// Both stores must not be nil when the returned Branch is used.
 func NewBranch(
 	refStore *storage.RefStore,
 	objectStore *storage.ObjectStore,
@@ -33,6 +43,11 @@ func NewBranch(
 	}
 }
 
+// List returns the local branches and marks the branch targeted by HEAD.
+//
+// It returns an error when HEAD cannot be read or does not target a local
+// branch, or when branch references cannot be listed. Branch names in the
+// result omit the refs/heads/ prefix.
 func (b *Branch) List() (BranchListResult, error) {
 	var result BranchListResult
 
@@ -72,6 +87,12 @@ func (b *Branch) List() (BranchListResult, error) {
 	return result, nil
 }
 
+// Create creates a local branch named shortName.
+//
+// An empty startPoint uses the current branch tip and fails when HEAD is
+// unborn. A non-empty startPoint may be a local branch name or the hash of an
+// existing commit. The new branch points directly to the resolved commit and
+// returns an error matching [storage.ErrRefExists] when it already exists.
 func (b *Branch) Create(shortName, startPoint string) error {
 	newBranchName, err := branchRefName(shortName)
 	if err != nil {
@@ -104,6 +125,12 @@ func (b *Branch) Create(shortName, startPoint string) error {
 	return nil
 }
 
+// Delete removes the local branch named shortName.
+//
+// Delete never removes the current branch. When force is false, the branch
+// must be fully merged into the current branch; when force is true, that
+// ancestry check is skipped. It returns an error matching
+// [storage.ErrRefNotExist] when the branch does not exist.
 func (b *Branch) Delete(shortName string, force bool) error {
 	currentBranchName, err := b.currentBranchName()
 	if err != nil {
